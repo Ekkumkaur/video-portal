@@ -14,6 +14,11 @@ import AdminLayout from "./layouts/AdminLayout";
 import AdminDashboard from "./pages/AdminDashboard";
 import PaidUsers from "./pages/PaidUsers";
 import UnpaidUsers from "./pages/UnpaidUsers";
+import PublicLayout from "./layouts/PublicLayout";
+import AboutUs from "./pages/AboutUs";
+import TeamsPage from "./pages/TeamsPage";
+import Career from "./pages/Career";
+import ContactUs from "./pages/ContactUs";
 
 const queryClient = new QueryClient();
 
@@ -25,9 +30,14 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/auth" element={<Auth />} />
+            <Route element={<PublicLayout />}>
+              <Route path="/" element={<Index />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/about-us" element={<AboutUs />} />
+              <Route path="/teams" element={<TeamsPage />} />
+              <Route path="/career" element={<Career />} />
+              <Route path="/contact-us" element={<ContactUs />} />
+            </Route>
 
             <Route element={<AdminLayout />}>
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
