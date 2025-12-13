@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { uploadVideo, getVideos, deleteVideo, getVideoById } from "@/apihelper/video";
 import { verifyPayment, downloadInvoiceAPI } from "@/apihelper/payment";
+import { v4 as uuidv4 } from "uuid";
 
 interface VideoFile {
     id: string;
@@ -131,7 +132,7 @@ const Videos = () => {
 
     const handleUpload = async (file: File) => {
         const newVideo: VideoFile = {
-            id: crypto.randomUUID(),
+            id: uuidv4(),
             name: file.name,
             size: file.size,
             progress: 0,
