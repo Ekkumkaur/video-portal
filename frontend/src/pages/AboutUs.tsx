@@ -8,9 +8,15 @@ const AboutUs = () => {
         <div className="min-h-screen bg-gray-50">
             <PageBanner title="About us" currentPage="About us" />
 
-            <AboutSection />
-            <MissionVisionSection />
-            <MeetOurTeamSection />
+            <div data-aos="fade-up">
+                <AboutSection />
+            </div>
+            <div data-aos="fade-up">
+                <MissionVisionSection />
+            </div>
+            <div data-aos="fade-up">
+                <MeetOurTeamSection />
+            </div>
         </div>
     );
 };

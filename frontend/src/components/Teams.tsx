@@ -31,8 +31,27 @@ const teams = [
 const Teams: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const visibleCount = 5; // how many logos visible at once on large screens
+  const [visibleCount, setVisibleCount] = useState(5);
   const total = teams.length;
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) {
+        // Show 2 items on mobile as per requirement
+        setVisibleCount(2);
+      } else if (window.innerWidth < 1024) {
+        setVisibleCount(3);
+      } else {
+        setVisibleCount(5);
+      }
+    };
+
+    // Initial check
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % total);
@@ -83,11 +102,11 @@ const Teams: React.FC = () => {
 
           {/* Logos slider - auto slide only (no arrows) */}
           <div className="relative w-full">
-            <div className="flex items-center justify-center gap-6 md:gap-10 lg:gap-14 w-full">
+            <div className="flex items-center justify-center gap-4 sm:gap-6 md:gap-10 lg:gap-14 w-full">
               {visibleTeams.map((team) => (
                 <div
                   key={team.name}
-                  className={`h-36 w-36 sm:h-44 sm:w-44 md:h-48 md:w-48 lg:h-56 lg:w-56 rounded-full ${team.bg} flex items-center justify-center shadow-[0_18px_45px_rgba(0,0,0,0.9)] overflow-hidden transition-transform hover:scale-105 duration-300`}
+                  className={`h-32 w-32 sm:h-44 sm:w-44 md:h-48 md:w-48 lg:h-56 lg:w-56 rounded-full ${team.bg} flex items-center justify-center shadow-[0_18px_45px_rgba(0,0,0,0.9)] overflow-hidden transition-transform hover:scale-105 duration-300`}
                 >
                   <img
                     src={team.logo}

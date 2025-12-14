@@ -62,7 +62,7 @@ const MeetOurTeamSection: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="relative z-50 mt-[-105px] mx-4 mb-2 bg-white rounded-2xl shadow-[0_12px_30px_rgba(0,0,0,0.16)] px-6 py-4 text-center transition-all duration-300 group-hover:opacity-0">
+                <div className="relative z-10 mt-[-105px] mx-4 mb-2 bg-white rounded-2xl shadow-[0_12px_30px_rgba(0,0,0,0.16)] px-6 py-4 text-center transition-all duration-300 group-hover:opacity-0">
                   <h3 className="text-lg md:text-xl font-extrabold text-[#111827] leading-snug">
                     {member.name}
                   </h3>

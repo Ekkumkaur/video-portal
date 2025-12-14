@@ -9,19 +9,25 @@ interface PageBannerProps {
 
 const PageBanner: React.FC<PageBannerProps> = ({ title, currentPage }) => {
     return (
-        <div className="relative w-full h-[300px] md:h-[350px] lg:h-[400px] bg-[#111a45] overflow-hidden flex items-center">
-            {/* Background Image - Full Opacity */}
+        <div className="relative w-full h-auto md:h-[350px] lg:h-[400px] bg-[#111a45] overflow-hidden">
+            {/* Mobile Background Image - Maintains Aspect Ratio */}
+            <img
+                src="/about-us.png"
+                alt="Banner"
+                className="block md:hidden w-full h-[150px] object-cover"
+            />
+
+            {/* Desktop Background Image - Full Opacity */}
             <div
-                className="absolute inset-0 bg-cover bg-center"
+                className="hidden md:block absolute inset-0 bg-cover bg-center"
                 style={{ backgroundImage: "url('/about-us.png')" }}
             />
 
-            {/* Subtle overlay if needed, but image looks dark enough. Keeping transparent for now or very light tint if image is too bright. 
-                Reference shows clean dark image. Let's trust the image.*/}
+            {/* Subtle overlay */}
             <div className="absolute inset-0 bg-black/10" />
 
-            {/* Content */}
-            <div className="relative z-10 container mx-auto px-4 md:px-8 lg:px-12 flex flex-col justify-center h-full">
+            {/* Content Overlay */}
+            <div className="absolute inset-0 z-10 container mx-auto px-4 md:px-8 lg:px-12 flex flex-col justify-center h-full">
                 <h1
                     className="text-white text-5xl md:text-6xl lg:text-[64px] font-bold uppercase tracking-tight mb-3 mt-8"
                     style={{ fontFamily: "'Oswald', sans-serif" }}

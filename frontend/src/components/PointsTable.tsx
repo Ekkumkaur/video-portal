@@ -13,7 +13,7 @@ const rows = [
   },
   {
     pos: 3,
-    name: "Norther Dabanggss",
+    name: "Norther Dabanggs",
     logo: "/3.png",
   },
   {
@@ -56,64 +56,83 @@ const PointsTable: React.FC = () => {
           </h2>
 
           {/* Table wrapper */}
-          <div className="overflow-hidden shadow-[0_18px_55px_rgba(0,0,0,0.7)]">
-            {/* Header row */}
-            <div className="bg-white">
-              <div className="grid grid-cols-[80px_minmax(0,2fr)_repeat(5,minmax(0,1fr))] text-[13px] md:text-sm font-extrabold tracking-wider uppercase text-[#111a45]">
-                <div className="py-5 pl-10 text-left">Pos</div>
-                <div className="py-5 text-center">Team</div>
-                <div className="py-5 text-center">Play</div>
-                <div className="py-5 text-center">Win</div>
-                <div className="py-5 text-center">Loss</div>
-                <div className="py-5 text-center">Run Rate</div>
-                <div className="py-5 text-center pr-10">Pts</div>
+          <div className="overflow-x-auto shadow-[0_18px_55px_rgba(0,0,0,0.7)] pb-2 scrollbar-thin scrollbar-thumb-white/40 scrollbar-track-white/10">
+            <div className="min-w-[800px]">
+              {/* Header row */}
+              <div className="bg-white">
+                <div className="grid grid-cols-[80px_100px_minmax(0,2fr)_repeat(5,minmax(0,1fr))] text-sm font-extrabold tracking-wider uppercase text-[#111a45]">
+                  <div className="py-5 text-center">Pos</div>
+                  <div className="py-5 text-center"></div> {/* Spacer for Logo */}
+                  <div className="py-5 text-center md:col-span-2 md:text-left md:pl-0">Team</div>
+                  <div className="py-5 text-center">Play</div>
+                  <div className="py-5 text-center">Win</div>
+                  <div className="py-5 text-center">Loss</div>
+                  <div className="py-5 text-center">Run Rate</div>
+                  <div className="py-5 text-center pr-10">Pts</div>
+                </div>
+              </div>
+
+              {/* Rows */}
+              <div className="divide-white/10">
+                {rows.map((row, index) => (
+                  <div
+                    key={row.pos}
+                    className={
+                      "grid grid-cols-[80px_100px_minmax(0,2fr)_repeat(5,minmax(0,1fr))] text-base text-white items-center h-24 " +
+                      (index % 2 === 0
+                        ? " bg-[#2d3c84]" // Lighter blue
+                        : " bg-[#182046]") // Darker blue
+                    }
+                  >
+                    <div className="font-semibold text-lg text-center">{row.pos}</div>
+
+                    <div className="flex items-center justify-center h-full">
+                      <div className="h-14 w-14 flex items-center justify-center shrink-0">
+                        <img
+                          src={row.logo}
+                          alt={row.name}
+                          className="h-full w-full object-contain drop-shadow-md"
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).style.display = "none";
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="font-medium px-2 text-left flex items-center justify-start">
+                      {row.name}
+                    </div>
+
+                    {[0, 0, 0, 0, 0].map((value, idx) => (
+                      <div
+                        key={idx}
+                        className={
+                          "text-center font-medium text-lg" +
+                          (idx === 4 ? " pr-10" : "")
+                        }
+                      >
+                        {value}
+                      </div>
+                    ))}
+                  </div>
+                ))}
               </div>
             </div>
 
-            {/* Rows */}
-            <div className="divide-white/10">
-              {rows.map((row, index) => (
-                <div
-                  key={row.pos}
-                  className={
-                    "grid grid-cols-[80px_minmax(0,2fr)_repeat(5,minmax(0,1fr))] text-sm md:text-base text-white items-center h-20" +
-                    (index % 2 === 0
-                      ? " bg-[#2d3c84]" // Lighter blue for 1st, 3rd, 5th (indices 0, 2, 4)
-                      : " bg-[#182046]") // Darker blue for 2nd, 4th, 6th
-                  }
-                >
-                  <div className="pl-10 font-semibold text-lg text-left">{row.pos}</div>
-
-                  <div className="flex items-center justify-center gap-24 px-4">
-                    <div className="h-12 w-12 flex items-center justify-center shrink-0">
-                      <img
-                        src={row.logo}
-                        alt={row.name}
-                        className="h-full w-full object-contain drop-shadow-md"
-                        onError={(e) => {
-                          (e.currentTarget as HTMLImageElement).style.display = "none";
-                        }}
-                      />
-                    </div>
-                    <span className="font-medium whitespace-nowrap min-w-[140px] text-left">
-                      {row.name}
-                    </span>
-                  </div>
-
-                  {["0", "0", "0", "0", "0"].map((value, idx) => (
-                    <div
-                      key={idx}
-                      className={
-                        "text-center font-medium text-lg" +
-                        (idx === 4 ? " pr-10" : "")
-                      }
-                    >
-                      {value}
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
+            {/* Custom Styles for Scrollbar (Fallback if Tailwind scrollbar plugin not installed) */}
+            <style jsx>{`
+              div::-webkit-scrollbar {
+                height: 6px;
+              }
+              div::-webkit-scrollbar-track {
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 9999px;
+              }
+              div::-webkit-scrollbar-thumb {
+                background: rgba(255, 255, 255, 0.4);
+                border-radius: 9999px;
+              }
+            `}</style>
           </div>
         </div>
       </div>

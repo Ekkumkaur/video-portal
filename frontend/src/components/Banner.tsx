@@ -10,13 +10,15 @@ const slides = [
   },
   {
     id: 1,
-    background: "/artist.png",
+    background: "/bg-cricket1.jpg",
+    // background: "/banner.png",
     title: "BHARAT KI LEAGUE",
     subtitle: "BHARTIYO KA SAPNA",
   },
   {
     id: 2,
-    background: "/artist.png",
+    background: "/bg-cricket1.jpg",
+    // background: "/banner.png",
     title: "BHARAT KI LEAGUE",
     subtitle: "BHARTIYO KA SAPNA",
   },
@@ -60,26 +62,36 @@ const Banner = () => {
   };
 
   return (
-    <div className="relative w-full h-[680px] md:h-[680px] lg:h-[680px] overflow-hidden font-sans">
+    <div className="relative w-full h-auto md:h-[680px] lg:h-[680px] overflow-hidden font-sans bg-[#020617]">
       <Carousel setApi={setApi} className="h-full">
         <CarouselContent className="h-full">
           {slides.map((slide) => (
             <CarouselItem key={slide.id} className="h-full">
               <div className="relative w-full h-full">
+                {/* Mobile View Image - Maintains Aspect Ratio */}
+                <img
+                  src={slide.background}
+                  alt="Banner"
+                  className="block md:hidden w-full h-auto"
+                />
+
+                {/* Desktop Background View */}
                 <div
-                  className="absolute inset-0 z-0 bg-cover bg-no-repeat"
+                  className="hidden md:block absolute inset-0 z-0 bg-cover bg-no-repeat"
                   style={{
                     backgroundImage: `url('${slide.background}')`,
                     backgroundPosition: "left center",
                     backgroundSize: "cover",
                   }}
-                >
-                  <div className="absolute inset-0 bg-[#070d1e]/20" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#020617]/20 via-transparent to-[#020617]/20" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#020617]/20 via-transparent to-[#020617]/20" />
-                </div>
+                />
 
-                <div className="relative z-10 w-full h-full max-w-[1400px] mx-auto px-4 md:px-10 lg:px-16 flex items-center">
+                {/* Shared Overlays (Visible on both Mobile and Desktop) */}
+                <div className="absolute inset-0 bg-[#070d1e]/20 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#020617]/20 via-transparent to-[#020617]/20 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#020617]/20 via-transparent to-[#020617]/20 pointer-events-none" />
+
+                {/* Content Overlay */}
+                <div className="absolute inset-0 z-10 w-full h-full max-w-[1400px] mx-auto px-4 md:px-10 lg:px-16 flex items-center">
                   <div className="absolute left-2 md:left-6 lg:left-10 top-1/2 -translate-y-1/2 hidden md:block select-none pointer-events-none">
                     <span
                       className="block text-[170px] lg:text-[170px] xl:text-[80px] font-black text-transparent leading-none opacity-60 tracking-[0.15em] filter blur-[0.2px]"
