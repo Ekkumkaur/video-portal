@@ -1,8 +1,16 @@
+import PageBanner from "@/components/PageBanner";
+import AboutSection from "@/components/AboutSection";
+import MissionVisionSection from "@/components/MissionVisionSection";
+import MeetOurTeamSection from "@/components/MeetOurTeamSection";
+
 const AboutUs = () => {
     return (
-        <div className="container mx-auto px-4 py-12">
-            <h1 className="text-4xl font-bold mb-6 text-[#111a45]">About Us</h1>
-            <p className="text-lg text-gray-700">Welcome to Beyond Reach Premier League. We are dedicated to bringing the best cricket action to you.</p>
+        <div className="min-h-screen bg-gray-50">
+            <PageBanner title="About us" currentPage="About us" />
+
+            <AboutSection />
+            <MissionVisionSection />
+            <MeetOurTeamSection />
         </div>
     );
 };

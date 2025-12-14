@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Instagram, Facebook, Linkedin, Twitter } from "lucide-react";
 
 const Footer: React.FC = () => {
@@ -54,19 +55,9 @@ const Footer: React.FC = () => {
               ))}
             </ul>
             {/* Store Buttons */}
-            <div className="flex gap-3 mt-2">
-              <button className="flex items-center gap-2 bg-black border border-white/20 rounded-lg px-3 py-1.5 hover:bg-black/80 transition-colors">
-                <div className="text-white">
-                  <div className="text-[9px] uppercase leading-none">Download on the</div>
-                  <div className="text-[13px] font-semibold leading-tight">App Store</div>
-                </div>
-              </button>
-              <button className="flex items-center gap-2 bg-black border border-white/20 rounded-lg px-3 py-1.5 hover:bg-black/80 transition-colors">
-                <div className="text-white">
-                  <div className="text-[9px] uppercase leading-none">GET IT ON</div>
-                  <div className="text-[13px] font-semibold leading-tight">Google Play</div>
-                </div>
-              </button>
+            <div className="flex gap-3 mt-4">
+              <img src="/ios-app.png" alt="ios-app" className="w-25 h-12" />
+              <img src="/google-store.webp" alt="android-app" className="w-22 h-12" />
             </div>
           </div>
 
@@ -99,14 +90,16 @@ const Footer: React.FC = () => {
             </div>
             <ul className="space-y-3">
               {[
-                "Contact Us",
-                "News",
-                "Privacy & Policy",
-                "Terms & Condition",
+                { name: "Contact Us", path: "/contact-us" },
+                { name: "News", path: "#" },
+                { name: "Privacy & Policy", path: "/privacy-policy" },
+                { name: "Terms & Condition", path: "/terms-and-conditions" },
               ].map((item) => (
-                <li key={item} className="flex items-center gap-2 group cursor-pointer hover:translate-x-1 transition-transform">
+                <li key={item.name} className="flex items-center gap-2 group cursor-pointer hover:translate-x-1 transition-transform">
                   <span className="text-[#FFC928] text-[10px]">▶</span>
-                  <span className="text-gray-200 hover:text-white transition-colors">{item}</span>
+                  <Link to={item.path} className="text-gray-200 hover:text-white transition-colors">
+                    {item.name}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -114,17 +107,37 @@ const Footer: React.FC = () => {
             <div className="mt-2">
               <h4 className="text-[#FFC928] text-sm font-semibold mb-3">Follow Us</h4>
               <div className="flex items-center gap-3">
-                <a href="#" className="w-8 h-8 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors text-white">
+                <a
+                  href="https://www.instagram.com/accounts/login/?next=%2Fthedigitalhubsolution%2F&source=omni_redirect"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors text-white"
+                >
                   <Instagram size={16} />
                 </a>
-                <a href="#" className="w-8 h-8 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors text-white">
+                <a
+                  href="https://www.facebook.com/thedigitalhubsolution/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors text-white"
+                >
                   <Facebook size={16} />
                 </a>
-                <a href="#" className="w-8 h-8 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors text-white">
+                <a
+                  href="https://www.linkedin.com/company/digital-hub-solution/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors text-white"
+                >
                   <Linkedin size={16} />
                 </a>
-                <a href="#" className="w-8 h-8 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors text-white">
-                  <Twitter size={16} /> {/* Using Twitter icon for 'X' as close approximation or if X icon unavailable in this version */}
+                <a
+                  href="https://x.com/dhubsolution/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors text-white"
+                >
+                  <Twitter size={16} />
                 </a>
               </div>
             </div>

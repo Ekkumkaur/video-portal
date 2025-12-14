@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Play, Mail, Lock, User, ArrowLeft, Loader2, Phone, MapPin, FileDigit, KeyRound, CheckCircle2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { login, register, sendOtp, verifyOtp } from "@/apihelper/auth";
-import { getLocationsAPI } from "@/apihelper/location";
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -22,44 +22,19 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 
-// Mock data as fallback
-const MOCK_LOCATIONS = [
-  {
-    state: "Uttar Pradesh",
-    cities: [
-      { name: "Noida", zoneId: "UP-ZN-01" },
-      { name: "Lucknow", zoneId: "UP-ZN-02" },
-      { name: "Ghaziabad", zoneId: "UP-ZN-03" }
-    ]
-  },
-  {
-    state: "Delhi",
-    cities: [
-      { name: "New Delhi", zoneId: "DL-ZN-01" },
-      { name: "South Delhi", zoneId: "DL-ZN-02" }
-    ]
-  },
-  {
-    state: "Maharashtra",
-    cities: [
-      { name: "Mumbai", zoneId: "MH-ZN-01" },
-      { name: "Pune", zoneId: "MH-ZN-02" }
-    ]
-  },
-  {
-    state: "Karnataka",
-    cities: [
-      { name: "Bangalore", zoneId: "KA-ZN-01" },
-      { name: "Mysore", zoneId: "KA-ZN-02" }
-    ]
-  }
-];
+type AuthProps = {
+  forceRegister?: boolean;
+};
 
-const Auth = () => {
+
+
+const Auth = ({ forceRegister }: AuthProps) => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [isRegister, setIsRegister] = useState(searchParams.get("mode") === "register");
+  const [isRegister, setIsRegister] = useState(
+    !!forceRegister || searchParams.get("mode") === "register"
+  );
   const [isLoading, setIsLoading] = useState(false);
 
   // OTP State
@@ -91,49 +66,38 @@ const Auth = () => {
   const [locations, setLocations] = useState<any[]>([]);
   const [availableCities, setAvailableCities] = useState<any[]>([]);
 
-  const fetchLocations = async () => {
-    console.log("Fetching locations...");
-    try {
-      const data = await getLocationsAPI();
-      console.log("Locations fetched from API:", data);
+  // const fetchLocations = async () => {
+  //   console.log("Fetching locations...");
+  //   try {
+  //     const data = await getStatesAPI();
+  //     console.log("States fetched from API:", data);
 
-      if (Array.isArray(data) && data.length > 0) {
-        setLocations(data);
-      } else {
-        console.warn("API returned empty/invalid data, using mock data.");
-        setLocations(MOCK_LOCATIONS);
-      }
-    } catch (e) {
-      console.error("Failed to load locations from API, using mock data.", e);
-      setLocations(MOCK_LOCATIONS);
-    }
-  };
+  //     if (Array.isArray(data) && data.length > 0) {
+  //       setLocations(data);
+  //     } else {
+  //       console.warn("API returned empty/invalid data, using mock data.");
+  //       // Map mock data to match expected structure { id, name }
+  //       setLocations(MOCK_LOCATIONS.map(l => ({ id: l.state === "Uttar Pradesh" ? "UP" : "MOCK", name: l.state })));
+  //     }
+  //   } catch (e) {
+  //     console.error("Failed to load locations from API, using mock data.", e);
+  //     setLocations(MOCK_LOCATIONS.map(l => ({ id: l.state === "Uttar Pradesh" ? "UP" : "MOCK", name: l.state })));
+  //   }
+  // };
 
   useEffect(() => {
-    const mode = searchParams.get("mode");
-    if (mode === "register") {
+    if (forceRegister) {
       setIsRegister(true);
-    } else {
-      setIsRegister(false);
+      return;
     }
-  }, [searchParams]);
 
-  useEffect(() => {
-    if (isRegister) {
-      fetchLocations();
-    }
-  }, [isRegister]);
+    const mode = searchParams.get("mode");
+    setIsRegister(mode === "register");
+  }, [searchParams, forceRegister]);
 
-  const handleStateChange = (value: string) => {
-    setFormData(prev => ({ ...prev, state: value, city: "", zone_id: "" }));
-    const selectedState = locations.find(l => l.state === value);
-    setAvailableCities(selectedState ? selectedState.cities : []);
-  };
 
-  const handleCityChange = (value: string) => {
-    const selectedCity = availableCities.find(c => c.name === value);
-    setFormData(prev => ({ ...prev, city: value, zone_id: selectedCity ? selectedCity.zoneId : "" }));
-  };
+
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -273,7 +237,7 @@ const Auth = () => {
 
       {/* Left Panel - Branding (Hidden on mobile) */}
       <div className="hidden lg:flex flex-1 flex-col justify-between p-12 relative overflow-hidden">
-        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/bg-cricket.png')" }} />
+        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/bg-cricket1.jpg')" }} />
         <div className="absolute inset-0 bg-gradient-to-br from-primary/80 to-black/60" />
 
         <Link to="/" className="relative z-10 flex items-center gap-2">
@@ -335,11 +299,11 @@ const Auth = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="fname" className="text-foreground">First Name</Label>
-                      <Input id="fname" value={formData.fname} onChange={handleChange} required />
+                      <Input id="fname" value={formData.fname} onChange={handleChange} required placeholder="Enter First Name" />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="lname" className="text-foreground">Last Name</Label>
-                      <Input id="lname" value={formData.lname} onChange={handleChange} required />
+                      <Input id="lname" value={formData.lname} onChange={handleChange} required placeholder="Enter Last Name" />
                     </div>
                   </div>
 
@@ -348,7 +312,7 @@ const Auth = () => {
                       <Label htmlFor="email" className="text-foreground">Email</Label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                        <Input id="email" type="email" className="pl-9" value={formData.email} onChange={handleChange} required />
+                        <Input id="email" type="email" className="pl-9" value={formData.email} onChange={handleChange} required placeholder="Enter Email" />
                       </div>
                     </div>
                     <div className="space-y-2">
@@ -363,6 +327,7 @@ const Auth = () => {
                             onChange={handleChange}
                             disabled={isPhoneVerified}
                             required
+                            placeholder="Enter Mobile Number"
                           />
                         </div>
                         {isPhoneVerified ? (
@@ -441,48 +406,30 @@ const Auth = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="address1" className="text-foreground">Address Line 1</Label>
-                      <Input id="address1" value={formData.address1} onChange={handleChange} required />
+                      <Input id="address1" value={formData.address1} onChange={handleChange} required placeholder="Enter Address Line 1" />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="address2" className="text-foreground">Address Line 2</Label>
-                      <Input id="address2" value={formData.address2} onChange={handleChange} />
+                      <Input id="address2" value={formData.address2} onChange={handleChange} placeholder="Enter Address Line 2" />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="state" className="text-foreground">State</Label>
-                      <Select onValueChange={handleStateChange} value={formData.state}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select State" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {locations.map((loc: any) => (
-                            <SelectItem key={loc.state} value={loc.state}>{loc.state}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <Input id="state" value={formData.state} onChange={handleChange} required placeholder="Enter State" />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="city" className="text-foreground">City</Label>
-                      <Select onValueChange={handleCityChange} value={formData.city} disabled={!formData.state}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select City" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {availableCities.map((city: any) => (
-                            <SelectItem key={city.name} value={city.name}>{city.name}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <Input id="city" value={formData.city} onChange={handleChange} required placeholder="Enter City" />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="pincode" className="text-foreground">Pincode</Label>
-                      <Input id="pincode" value={formData.pincode} onChange={handleChange} required />
+                      <Input id="pincode" value={formData.pincode} onChange={handleChange} required placeholder="Enter Pincode" />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="zone_id" className="text-foreground">Zone ID</Label>
-                      <Input id="zone_id" value={formData.zone_id} readOnly className="bg-muted cursor-not-allowed" />
+                      <Input id="zone_id" value={formData.zone_id} onChange={handleChange} required placeholder="Enter Zone ID" />
                     </div>
                   </div>
 
@@ -494,7 +441,7 @@ const Auth = () => {
                       <Label htmlFor="aadhar" className="text-foreground">Aadhar Number</Label>
                       <div className="relative">
                         <FileDigit className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                        <Input id="aadhar" className="pl-9" value={formData.aadhar} onChange={handleChange} required />
+                        <Input id="aadhar" className="pl-9" value={formData.aadhar} onChange={handleChange} required placeholder="Enter Aadhar Number" />
                       </div>
                     </div>
                     <div className="space-y-2">
@@ -557,7 +504,17 @@ const Auth = () => {
                 {isRegister ? "Already have an account?" : "Don't have an account?"}{" "}
                 <button
                   type="button"
-                  onClick={() => setIsRegister(!isRegister)}
+                  onClick={() => {
+                    if (isRegister) {
+                      navigate("/auth");
+                    } else {
+                      if (forceRegister) {
+                        navigate("/registration");
+                      } else {
+                        navigate("/auth?mode=register");
+                      }
+                    }
+                  }}
                   className="text-primary hover:underline font-medium"
                 >
                   {isRegister ? "Sign in" : "Register"}

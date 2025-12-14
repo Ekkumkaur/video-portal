@@ -5,6 +5,8 @@ const userRoutes = require("./routes/userRoute");
 const authRoutes = require("./routes/authRoute");
 const videoRoutes = require("./routes/videoRoute");
 const locationRoute = require("./routes/locationRoute");
+const contactRoute = require("./routes/contactRoute");
+
 const path = require("path");
 const app = express();
 const port = 5000;
@@ -29,10 +31,12 @@ app.get("/", (req, res) => {
   res.send("app start");
 });
 
+
 app.use("/auth", authRoutes);
 app.use("/api/video", videoRoutes);
 app.use("/api", userRoutes);
 app.use("/api/locations", locationRoute);
+app.use("/api/contact", contactRoute);
 
 app.listen(port, () => {
   console.log(`server is running on port ${port}`);

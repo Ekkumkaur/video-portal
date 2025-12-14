@@ -1,63 +1,105 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const teams = [
   {
     name: "North East Panthers",
     logo: "/2.png",
+    bg: "bg-white",
   },
   {
     name: "Central Strikers",
     logo: "/5.png",
+    bg: "bg-white",
   },
   {
     name: "Western Heroes",
     logo: "/4.png",
+    bg: "bg-white",
   },
   {
-    name: "Norther Dabanggss",
+    name: "Northern Dabanggss",
     logo: "/3.png",
+    bg: "bg-[#0F172A]", // Dark background from image
   },
   {
     name: "Southern Lions",
     logo: "/1.png",
+    bg: "bg-white",
   },
 ];
 
 const Teams: React.FC = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const visibleCount = 5; // how many logos visible at once on large screens
+  const total = teams.length;
+
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev + 1) % total);
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev - 1 + total) % total);
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      nextSlide();
+    }, 3000); // auto slide every 3 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const getVisibleTeams = () => {
+    const items: typeof teams = [];
+    for (let i = 0; i < Math.min(visibleCount, total); i++) {
+      const index = (currentIndex + i) % total;
+      items.push(teams[index]);
+    }
+    return items;
+  };
+
+  const visibleTeams = getVisibleTeams();
+
   return (
     <section className="relative w-full">
       {/* Stadium background same style as design */}
       <div className="relative py-8 md:py-12 lg:py-14 px-4 md:px-8 lg:px-12 overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/artist.png')" }}
+          style={{ backgroundImage: "url('/fixture.png')" }}
         />
         {/* Slight dark overlay for contrast */}
-        <div className="absolute inset-0 bg-[#020617]/50" />
+        <div className="absolute inset-0 bg-[#020617]/10" />
 
-        <div className="relative max-w-6xl mx-auto flex flex-col items-center">
+        <div className="relative max-w-12xl mx-auto flex flex-col items-center" data-aos="fade-up">
           {/* Heading */}
-          <h2 className="text-center text-white text-3xl md:text-4xl lg:text-[40px] font-extrabold tracking-[0.18em] uppercase mb-7 md:mb-9">
+          <h2
+            className="text-center text-[#FFD700] text-3xl md:text-4xl lg:text-[40px] font-extrabold tracking-[0.05em] mb-8 md:mb-10"
+            style={{ fontFamily: "'Rye', serif" }}
+          >
             Teams
           </h2>
 
-          {/* Logos row */}
-          <div className="flex flex-wrap items-center justify-center gap-6 md:gap-9 lg:gap-12">
-            {teams.map((team) => (
-              <div
-                key={team.name}
-                className="h-40 w-40 sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-36 lg:w-36 rounded-full bg-white flex items-center justify-center shadow-[0_18px_45px_rgba(0,0,0,0.9)] overflow-hidden"
-              >
-                <img
-                  src={team.logo}
-                  alt={team.name}
-                  className="h-[100%] w-[100%] object-contain"
-                  onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).style.display = "none";
-                  }}
-                />
-              </div>
-            ))}
+          {/* Logos slider - auto slide only (no arrows) */}
+          <div className="relative w-full">
+            <div className="flex items-center justify-center gap-6 md:gap-10 lg:gap-14 w-full">
+              {visibleTeams.map((team) => (
+                <div
+                  key={team.name}
+                  className={`h-36 w-36 sm:h-44 sm:w-44 md:h-48 md:w-48 lg:h-56 lg:w-56 rounded-full ${team.bg} flex items-center justify-center shadow-[0_18px_45px_rgba(0,0,0,0.9)] overflow-hidden transition-transform hover:scale-105 duration-300`}
+                >
+                  <img
+                    src={team.logo}
+                    alt={team.name}
+                    className="h-full w-full object-contain p-2"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = "none";
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

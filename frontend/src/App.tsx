@@ -19,45 +19,64 @@ import AboutUs from "./pages/AboutUs";
 import TeamsPage from "./pages/TeamsPage";
 import Career from "./pages/Career";
 import ContactUs from "./pages/ContactUs";
+import Registration from "./pages/Registration";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsAndConditions from "./pages/TermsAndConditions";
+
+import AOS from "aos";
+import "aos/dist/aos.css";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route element={<PublicLayout />}>
-              <Route path="/" element={<Index />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/about-us" element={<AboutUs />} />
-              <Route path="/teams" element={<TeamsPage />} />
-              <Route path="/career" element={<Career />} />
-              <Route path="/contact-us" element={<ContactUs />} />
-            </Route>
+const App = () => {
+  useEffect(() => {
+    AOS.init({
+      once: true, // Animation happens only once - while scrolling down
+      duration: 1000, // Duration of animation
+    });
+  }, []);
 
-            <Route element={<AdminLayout />}>
-              <Route path="/admin/dashboard" element={<AdminDashboard />} />
-              <Route path="/admin/paid-users" element={<PaidUsers />} />
-              <Route path="/admin/unpaid-users" element={<UnpaidUsers />} />
-            </Route>
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route element={<PublicLayout />}>
+                <Route path="/" element={<Index />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/registration" element={<Registration />} />
+                <Route path="/about-us" element={<AboutUs />} />
+                <Route path="/teams" element={<TeamsPage />} />
+                <Route path="/career" element={<Career />} />
+                <Route path="/contact-us" element={<ContactUs />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+              </Route>
 
-            <Route element={<DashboardLayout />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/dashboard/videos" element={<Videos />} />
-              <Route path="/dashboard/settings" element={<Dashboard />} />
-            </Route>
+              <Route element={<AdminLayout />}>
+                <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                <Route path="/admin/paid-users" element={<PaidUsers />} />
+                <Route path="/admin/unpaid-users" element={<UnpaidUsers />} />
+              </Route>
 
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
-);
+              <Route element={<DashboardLayout />}>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/dashboard/videos" element={<Videos />} />
+                <Route path="/dashboard/settings" element={<Dashboard />} />
+              </Route>
+
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;

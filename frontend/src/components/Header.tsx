@@ -6,7 +6,7 @@ const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     return (
-        <header className="relative w-full z-50 font-sans shadow-md bg-[#111a45] text-white">
+        <header className="sticky top-0 z-50 font-sans shadow-md bg-[#111a45] text-white">
             {/* Logo Container - Absolute Left */}
             <div className="absolute top-0 bottom-0 left-0 z-30 flex items-center pl-4 lg:pl-12">
                 <Link to="/" className="flex items-center">
@@ -28,7 +28,7 @@ const Header = () => {
                     <div className="hidden md:flex items-center gap-6">
                         <div className="flex items-center gap-2">
                             <Phone className="w-4 h-4 fill-current" />
-                            <span className="text-[13px] font-bold tracking-wide">+(91) 8860342926</span>
+                            <a href="tel:+918860342926" className="text-[13px] font-bold tracking-wide hover:text-blue-600 transition-colors">+(91) 8860342926</a>
                         </div>
                         <div className="h-4 w-px bg-slate-300" />
                         <div className="flex items-center gap-2">
@@ -53,10 +53,10 @@ const Header = () => {
                         <div className="h-4 w-px bg-slate-300" />
 
                         <div className="flex items-center gap-3 md:gap-4">
-                            <a href="#" className="hover:text-blue-600 transition-colors"><Facebook className="w-3.5 h-3.5 fill-current" /></a>
-                            <a href="#" className="hover:text-blue-600 transition-colors"><Twitter className="w-3.5 h-3.5 fill-current" /></a>
-                            <a href="#" className="hover:text-blue-600 transition-colors"><Linkedin className="w-3.5 h-3.5 fill-current" /></a>
-                            <a href="#" className="hover:text-blue-600 transition-colors"><Instagram className="w-3.5 h-3.5 stroke-[2]" /></a>
+                            <a href="https://www.facebook.com/thedigitalhubsolution/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition-colors"><Facebook className="w-3.5 h-3.5 fill-current" /></a>
+                            <a href="https://x.com/dhubsolution/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition-colors"><Twitter className="w-3.5 h-3.5 fill-current" /></a>
+                            <a href="https://www.linkedin.com/company/digital-hub-solution/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition-colors"><Linkedin className="w-3.5 h-3.5 fill-current" /></a>
+                            <a href="https://www.instagram.com/accounts/login/?next=%2Fthedigitalhubsolution%2F&source=omni_redirect" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition-colors"><Instagram className="w-3.5 h-3.5 stroke-[2]" /></a>
                         </div>
                     </div>
                 </div>
@@ -69,7 +69,7 @@ const Header = () => {
                     {["Home", "About Us", "Teams", "Career", "Registration", "Contact Us"].map((item) => {
                         let path = "/";
                         if (item === "Home") path = "/";
-                        else if (item === "Registration") path = "/auth";
+                        else if (item === "Registration") path = "/auth?mode=register";
                         else path = `/${item.toLowerCase().replace(" ", "-")}`;
 
                         return (
@@ -101,7 +101,7 @@ const Header = () => {
                         {["Home", "About Us", "Teams", "Career", "Registration", "Contact Us"].map((item) => {
                             let path = "/";
                             if (item === "Home") path = "/";
-                            else if (item === "Registration") path = "/auth";
+                            else if (item === "Registration") path = "/auth?mode=register";
                             else path = `/${item.toLowerCase().replace(" ", "-")}`;
 
                             return (

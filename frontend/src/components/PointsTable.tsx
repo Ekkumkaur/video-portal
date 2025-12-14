@@ -46,53 +46,56 @@ const PointsTable: React.FC = () => {
         <div className="absolute inset-0 bg-[#020617]/45" />
 
         {/* Centered table card over full-width background */}
-        <div className="relative max-w-6xl mx-auto">
+        <div className="relative max-w-7xl mx-auto">
           {/* Title */}
-          <h2 className="text-center text-white text-3xl md:text-4xl font-extrabold mb-5 md:mb-7 tracking-[0.18em] uppercase">
+          <h2
+            className="text-center text-white text-3xl md:text-4xl lg:text-[40px] font-extrabold mb-8 md:mb-10 tracking-[0.05em]"
+            style={{ fontFamily: "'Rye', serif" }}
+          >
             Points Table
           </h2>
 
-          {/* Table wrapper (no extra dark background, just subtle shadow) */}
+          {/* Table wrapper */}
           <div className="overflow-hidden shadow-[0_18px_55px_rgba(0,0,0,0.7)]">
             {/* Header row */}
             <div className="bg-white">
-              <div className="grid grid-cols-[70px_minmax(0,2.6fr)_repeat(5,minmax(0,1fr))] text-[11px] md:text-xs font-semibold tracking-[0.18em] uppercase text-[#111a45]">
-                <div className="py-3 pl-6">Pos</div>
-                <div className="py-3">Team</div>
-                <div className="py-3 text-center">Play</div>
-                <div className="py-3 text-center">Win</div>
-                <div className="py-3 text-center">Loss</div>
-                <div className="py-3 text-center">Run Rate</div>
-                <div className="py-3 text-center pr-6">Pts</div>
+              <div className="grid grid-cols-[80px_minmax(0,2fr)_repeat(5,minmax(0,1fr))] text-[13px] md:text-sm font-extrabold tracking-wider uppercase text-[#111a45]">
+                <div className="py-5 pl-10 text-left">Pos</div>
+                <div className="py-5 text-center">Team</div>
+                <div className="py-5 text-center">Play</div>
+                <div className="py-5 text-center">Win</div>
+                <div className="py-5 text-center">Loss</div>
+                <div className="py-5 text-center">Run Rate</div>
+                <div className="py-5 text-center pr-10">Pts</div>
               </div>
             </div>
 
             {/* Rows */}
-            <div>
+            <div className="divide-white/10">
               {rows.map((row, index) => (
                 <div
                   key={row.pos}
                   className={
-                    "grid grid-cols-[70px_minmax(0,2.6fr)_repeat(5,minmax(0,1fr))] text-xs md:text-sm text-white" +
+                    "grid grid-cols-[80px_minmax(0,2fr)_repeat(5,minmax(0,1fr))] text-sm md:text-base text-white items-center h-20" +
                     (index % 2 === 0
-                      ? " bg-[#2f4092]"
-                      : " bg-[#111a45]")
+                      ? " bg-[#2d3c84]" // Lighter blue for 1st, 3rd, 5th (indices 0, 2, 4)
+                      : " bg-[#182046]") // Darker blue for 2nd, 4th, 6th
                   }
                 >
-                  <div className="py-3.5 pl-6 font-semibold">{row.pos}</div>
+                  <div className="pl-10 font-semibold text-lg text-left">{row.pos}</div>
 
-                  <div className="py-3.5 flex items-center gap-3 pr-2">
-                    <div className="h-12 w-12 flex items-center justify-center overflow-hidden">
+                  <div className="flex items-center justify-center gap-24 px-4">
+                    <div className="h-12 w-12 flex items-center justify-center shrink-0">
                       <img
                         src={row.logo}
                         alt={row.name}
-                        className="h-full w-full object-contain"
+                        className="h-full w-full object-contain drop-shadow-md"
                         onError={(e) => {
                           (e.currentTarget as HTMLImageElement).style.display = "none";
                         }}
                       />
                     </div>
-                    <span className="text-sm md:text-base font-medium whitespace-nowrap">
+                    <span className="font-medium whitespace-nowrap min-w-[140px] text-left">
                       {row.name}
                     </span>
                   </div>
@@ -101,8 +104,8 @@ const PointsTable: React.FC = () => {
                     <div
                       key={idx}
                       className={
-                        "py-3.5 text-center text-sm font-medium" +
-                        (idx === 4 ? " pr-6" : "")
+                        "text-center font-medium text-lg" +
+                        (idx === 4 ? " pr-10" : "")
                       }
                     >
                       {value}
