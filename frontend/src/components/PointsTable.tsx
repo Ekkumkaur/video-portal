@@ -60,15 +60,15 @@ const PointsTable: React.FC = () => {
             <div className="min-w-[800px]">
               {/* Header row */}
               <div className="bg-white">
-                <div className="grid grid-cols-[80px_100px_minmax(0,2fr)_repeat(5,minmax(0,1fr))] text-sm font-extrabold tracking-wider uppercase text-[#111a45]">
-                  <div className="py-5 text-center">Pos</div>
-                  <div className="py-5 text-center"></div> {/* Spacer for Logo */}
-                  <div className="py-5 text-center md:col-span-2 md:text-left md:pl-0">Team</div>
-                  <div className="py-5 text-center">Play</div>
-                  <div className="py-5 text-center">Win</div>
-                  <div className="py-5 text-center">Loss</div>
-                  <div className="py-5 text-center">Run Rate</div>
-                  <div className="py-5 text-center pr-10">Pts</div>
+                <div className="grid grid-cols-[80px_80px_1fr_100px_100px_100px_140px_100px] text-sm font-extrabold tracking-wider uppercase text-[#111a45] items-center">
+                  <div className="py-6 text-center">Pos</div>
+                  <div className="py-6 text-center"></div> {/* Spacer for Logo */}
+                  <div className="py-6 text-left pl-2">Team</div>
+                  <div className="py-6 text-center">Play</div>
+                  <div className="py-6 text-center">Win</div>
+                  <div className="py-6 text-center">Loss</div>
+                  <div className="py-6 text-center">Run Rate</div>
+                  <div className="py-6 text-center pr-8">Pts</div>
                 </div>
               </div>
 
@@ -78,16 +78,16 @@ const PointsTable: React.FC = () => {
                   <div
                     key={row.pos}
                     className={
-                      "grid grid-cols-[80px_100px_minmax(0,2fr)_repeat(5,minmax(0,1fr))] text-base text-white items-center h-24 " +
+                      "grid grid-cols-[80px_80px_1fr_100px_100px_100px_140px_100px] text-base text-white items-center h-24 " +
                       (index % 2 === 0
                         ? " bg-[#2d3c84]" // Lighter blue
                         : " bg-[#182046]") // Darker blue
                     }
                   >
-                    <div className="font-semibold text-lg text-center">{row.pos}</div>
+                    <div className="font-bold text-xl text-center">{row.pos}</div>
 
                     <div className="flex items-center justify-center h-full">
-                      <div className="h-14 w-14 flex items-center justify-center shrink-0">
+                      <div className="h-12 w-12 flex items-center justify-center shrink-0">
                         <img
                           src={row.logo}
                           alt={row.name}
@@ -99,7 +99,7 @@ const PointsTable: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="font-medium px-2 text-left flex items-center justify-start">
+                    <div className="font-medium text-lg px-2 text-left flex items-center justify-start">
                       {row.name}
                     </div>
 
@@ -108,7 +108,7 @@ const PointsTable: React.FC = () => {
                         key={idx}
                         className={
                           "text-center font-medium text-lg" +
-                          (idx === 4 ? " pr-10" : "")
+                          (idx === 4 ? " pr-8" : "")
                         }
                       >
                         {value}

@@ -363,7 +363,7 @@ const Videos = () => {
                         </Button>
                     </label>
                     <p className="text-xs text-muted-foreground mt-4">
-                        Supports MP4, MOV, AVI, WMV up to 2GB
+                        Supports MP4, MOV, AVI, WMV up to 1GB
                     </p>
                 </div>
             </div>

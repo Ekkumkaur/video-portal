@@ -160,7 +160,7 @@ const ContactUs = () => {
                                     </div>
                                     <div className="flex items-start gap-3">
                                         <span className="mt-0.5">✉️</span>
-                                        <span>ektadev531@gmail.com</span>
+                                        <span>info@brpl.net</span>
                                     </div>
                                     <div className="flex items-start gap-3">
                                         <span className="mt-0.5">📍</span>

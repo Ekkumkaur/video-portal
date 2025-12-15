@@ -14,6 +14,9 @@ const storage = multerS3({
     key: function (req, file, cb) {
         const userId = req.userId ? req.userId.toString() : 'anonymous';
         cb(null, `${userId}/${Date.now()}-${file.originalname}`);
+    },
+    limits: {
+        fileSize: 1024 * 1024 * 1024 // 1GB
     }
 });
 
