@@ -24,7 +24,7 @@ const generateInvoicePDF = (video, user) => {
                 .text('Beyond Reach Premiere League', 110, 57)
                 .fontSize(10)
                 .text('Ground Floor, Suite G-01, Procapitus Business Park, D-247/4A, D Block, Sector 63, Noida, Uttar Pradesh 201309', 110, 80, { width: 250 })
-                .text('info@brpl.net', 110, 110)
+                .text('ektadev531@gmail.com', 110, 110)
                 .moveDown();
 
             // Invoice Label and Details (Right aligned)
@@ -315,7 +315,7 @@ const drawInvoice = (doc, video, user) => {
     doc.text('Beyond Reach Premiere League', marginLeft, addressTop);
     doc.font('Helvetica').fontSize(9).fillColor('#555555');
     doc.text('Ground Floor, Suite G-01, Procapitus Business Park, D-247/4A, D Block, Sector 63, Noida, Uttar Pradesh 201309', marginLeft, addressTop + 12, { width: contentWidth });
-    doc.text('Email: info@brpl.net | Mobile: 9999999999', marginLeft, addressTop + 24);
+    doc.text('Email: ektadev531@gmail.com | Mobile: 9999999999', marginLeft, addressTop + 24);
 
     // --- Terms and Conditions ---
     const termsTop = addressTop + 45;

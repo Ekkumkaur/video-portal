@@ -32,7 +32,7 @@ const sendInvoiceEmail = async (user, video, downloadLink, previewLink, pdfBuffe
         }
 
         const mailOptions = {
-            from: '"Beyond Reach Premiere League" <info@brpl.net>',
+            from: '"Beyond Reach Premiere League" <ektadev531@gmail.com>',
             to: user.email,
             subject: `Invoice for Transaction ${video.paymentId}`,
             html: `

@@ -12,6 +12,7 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { CheckCircle2 } from "lucide-react";
+import SEO from "@/components/SEO";
 
 const ContactUs = () => {
     const [formData, setFormData] = useState({
@@ -63,6 +64,10 @@ const ContactUs = () => {
 
     return (
         <div className="min-h-screen bg-gray-50">
+            <SEO
+                title="Contact Us"
+                description="Get in touch with Beyond Reach Premier League. We are here to help you with expert guidance and support."
+            />
             <PageBanner title="Contact us" currentPage="Contact us" />
 
             <section className="container mx-auto px-4 py-16" data-aos="fade-up">
@@ -155,7 +160,7 @@ const ContactUs = () => {
                                     </div>
                                     <div className="flex items-start gap-3">
                                         <span className="mt-0.5">✉️</span>
-                                        <span>info@brpl.net</span>
+                                        <span>ektadev531@gmail.com</span>
                                     </div>
                                     <div className="flex items-start gap-3">
                                         <span className="mt-0.5">📍</span>

@@ -1,4 +1,5 @@
 import PageBanner from "@/components/PageBanner";
+import SEO from "@/components/SEO";
 
 const teams = [
     {
@@ -30,6 +31,10 @@ const teams = [
 const TeamsPage = () => {
     return (
         <div className="min-h-screen bg-gray-50">
+            <SEO
+                title="Our Teams"
+                description="Meet the teams competing in the Beyond Reach Premier League. Passion, skill, and dedication on full display."
+            />
             <PageBanner title="Teams" currentPage="Teams" />
 
             <section className="container mx-auto px-4 py-16" data-aos="fade-up">
