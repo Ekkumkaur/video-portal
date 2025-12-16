@@ -152,7 +152,7 @@ const drawInvoice = (doc, video, user) => {
 
     const contentWidth = pageWidth - marginLeft - marginRight;
 
-    const baseAmount = 1499.0;
+    const baseAmount = 1.0;
     const taxableAmount = baseAmount;
     const cgst = +(taxableAmount * 0.09).toFixed(2);
     const sgst = +(taxableAmount * 0.09).toFixed(2);

@@ -277,7 +277,7 @@ const Videos = () => {
             if (!currentVideoId) throw new Error("No video ID");
 
             // 1. Create Order
-            const order = await createRazorpayOrder(1499);
+            const order = await createRazorpayOrder(1);
 
             // 2. Options
             const options: any = {
