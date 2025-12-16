@@ -28,8 +28,8 @@ const AdminDashboard = () => {
 
             const paidCount = paid?.length || 0;
             const unpaidCount = unpaid?.length || 0;
-            // Assuming flat rate 1499 for now as per previous logic
-            const totalRevenue = paidCount * 1499;
+            // Assuming flat rate 1 for now as per previous logic
+            const totalRevenue = paidCount * 1;
 
             setStats({
                 paidCount,
