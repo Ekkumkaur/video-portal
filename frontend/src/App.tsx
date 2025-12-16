@@ -20,6 +20,7 @@ import TeamsPage from "./pages/TeamsPage";
 import Career from "./pages/Career";
 import ContactUs from "./pages/ContactUs";
 import Registration from "./pages/Registration";
+import ThankYou from "./pages/ThankYou";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsAndConditions from "./pages/TermsAndConditions";
 
@@ -59,6 +60,8 @@ const App = () => {
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
               </Route>
+
+              <Route path="/thank-you" element={<ThankYou />} />
 
               <Route element={<AdminLayout />}>
                 <Route path="/admin/dashboard" element={<AdminDashboard />} />

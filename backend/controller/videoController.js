@@ -170,8 +170,16 @@ const downloadInvoice = async (req, res) => {
             return res.status(404).json({ message: "Video not found" });
         }
 
-        if (video.status !== 'completed' || !video.paymentId) {
+        if (video.status !== 'completed') {
             return res.status(400).json({ message: "Invoice not available for this video" });
+        }
+
+        // Fallback for missing paymentId
+        if (!video.paymentId) {
+            video.paymentId = `INV-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+            // Optional: Save it back to DB so it persists?
+            // await video.save(); 
+            // Better to just use it for the PDF generation for now to avoid side effects
         }
 
         const user = await User.findById(req.userId);

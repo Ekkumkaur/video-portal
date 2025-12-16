@@ -101,11 +101,15 @@ const Auth = ({ forceRegister }: AuthProps) => {
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
-    // Reset phone verification if number changes
+    // For mobile, only allow numbers and max 10 digits
     if (e.target.id === 'mobile') {
+      const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+      setFormData({ ...formData, [e.target.id]: val });
       setIsPhoneVerified(false);
+      return;
     }
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+    // Reset phone verification if number changes (handled above for mobile specific)
   };
 
   const handleSelectChange = (value: string, field: string) => {
@@ -113,11 +117,11 @@ const Auth = ({ forceRegister }: AuthProps) => {
   };
 
   const handleSendOtp = async () => {
-    if (!formData.mobile || formData.mobile.length < 10) {
+    if (!formData.mobile || !/^\d{10}$/.test(formData.mobile)) {
       toast({
         variant: "destructive",
         title: "Invalid Mobile Number",
-        description: "Please enter a valid mobile number first.",
+        description: "Please enter a valid 10-digit mobile number.",
       });
       return;
     }
@@ -187,11 +191,8 @@ const Auth = ({ forceRegister }: AuthProps) => {
     try {
       if (isRegister) {
         await register(formData);
-        toast({
-          title: "Account Created!",
-          description: "Welcome to VideoHub. Let's get started!",
-        });
-        navigate("/auth"); // Redirect to login
+        // Removed success toast as per requirement
+        navigate("/thank-you");
         setIsRegister(false);
       } else {
         const response = await login({ email: formData.email, password: formData.password });
@@ -332,6 +333,8 @@ const Auth = ({ forceRegister }: AuthProps) => {
                             onChange={handleChange}
                             disabled={isPhoneVerified}
                             required
+                            inputMode="numeric"
+                            maxLength={10}
                             placeholder="Enter Mobile Number"
                           />
                         </div>
@@ -470,6 +473,7 @@ const Auth = ({ forceRegister }: AuthProps) => {
                         value={formData.email}
                         onChange={handleChange}
                         required
+                        autoComplete="off"
                       />
                     </div>
                   </div>
@@ -486,6 +490,7 @@ const Auth = ({ forceRegister }: AuthProps) => {
                         value={formData.password}
                         onChange={handleChange}
                         required
+                        autoComplete="new-password"
                       />
                     </div>
                   </div>

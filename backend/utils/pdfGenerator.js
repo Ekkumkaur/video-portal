@@ -152,11 +152,12 @@ const drawInvoice = (doc, video, user) => {
 
     const contentWidth = pageWidth - marginLeft - marginRight;
 
-    const baseAmount = 1499;
-    const taxableAmount = baseAmount;
-    const cgst = +(taxableAmount * 0.09).toFixed(2);
-    const sgst = +(taxableAmount * 0.09).toFixed(2);
-    const totalAmount = +(taxableAmount + cgst + sgst).toFixed(2);
+    const baseAmount = video.amount ? Number(video.amount) : 1499;
+    const totalAmount = baseAmount; // No taxes
+
+    // Calculate total explicitly to ensure number
+    const finalTotal = Number(totalAmount).toFixed(2);
+
 
     // --- Top colored band ---
     doc.save();
@@ -177,18 +178,18 @@ const drawInvoice = (doc, video, user) => {
         .fillColor('#555555')
         .text('TAX INVOICE', marginLeft + 70, 65);
 
-    const rightX = marginLeft + contentWidth / 2 + 40;
+    const infoWidth = 200;
+    const infoX = marginLeft + contentWidth - infoWidth;
     const today = new Date();
-
-    // Invoice Details (Right Side)
-    // Removed overlapping Company Address from up here as per request ("shift address in bottom")
 
     const infoTop = 40;
     doc.fillColor('#000000').fontSize(10);
-    doc.text(`Invoice # : ${video.paymentId}`, rightX, infoTop, { align: 'right' });
-    doc.text(`Date : ${today.toLocaleDateString()}`, rightX, infoTop + 14, { align: 'right' });
-    doc.text(`Place of Supply : ${user.state || ''}`, rightX, infoTop + 28, { align: 'right' });
-    doc.text(`GSTIN: 36ABCBS2942R1ZR`, rightX, infoTop + 42, { align: 'right' });
+    doc.text(`Invoice # : ${video.paymentId}`, infoX, infoTop, { align: 'right', width: infoWidth });
+    doc.text(`Date : ${today.toLocaleDateString()}`, infoX, infoTop + 14, { align: 'right', width: infoWidth });
+    doc.text(`Place of Supply : ${user.state || ''}`, infoX, infoTop + 28, { align: 'right', width: infoWidth });
+    // Removed GSTIN if not needed, or keep it. User asked to remove SGST/CGST, maybe GSTIN is fine or not?
+    // User said "remove sgst and cgst also". I will keep GSTIN of company for now unless asked.
+    doc.text(`GSTIN: 36ABCBS2942R1ZR`, infoX, infoTop + 42, { align: 'right', width: infoWidth });
 
     // --- Bill To and Ship To ---
     const blockTop = 110;
@@ -249,7 +250,7 @@ const drawInvoice = (doc, video, user) => {
     ].filter(Boolean);
     doc.text(descriptionLines.join(' - '), colDescX, itemY + 6, { width: colHsnX - colDescX - 10 });
     doc.text('998365', colHsnX, itemY + 6);
-    doc.text(`₹${taxableAmount.toFixed(2)}`, colAmountX, itemY + 6, { width: 100, align: 'right' });
+    doc.text(`Rs. ${finalTotal}`, colAmountX, itemY + 6, { width: 100, align: 'right' });
 
     const afterItemY = itemY + rowHeight + 4;
     doc.strokeColor('#dddddd').lineWidth(0.5)
@@ -257,29 +258,13 @@ const drawInvoice = (doc, video, user) => {
         .lineTo(marginLeft + contentWidth, afterItemY)
         .stroke();
 
-    // --- Tax summary on right side ---
+    // --- Total Summary (Simplified, no Tax) ---
     const taxBlockTop = afterItemY + 16;
     const taxLeft = marginLeft + contentWidth - 220;
 
-    doc.font('Helvetica-Bold').fontSize(10).fillColor('#000000');
-    doc.text('Taxable Amount', taxLeft, taxBlockTop);
-    doc.text(`₹${taxableAmount.toFixed(2)}`, taxLeft + 120, taxBlockTop, { align: 'right', width: 100 });
-
-    doc.font('Helvetica').fontSize(10);
-    doc.text(`CGST 9.0%`, taxLeft, taxBlockTop + 14);
-    doc.text(`₹${cgst.toFixed(2)}`, taxLeft + 120, taxBlockTop + 14, { align: 'right', width: 100 });
-
-    doc.text(`SGST 9.0%`, taxLeft, taxBlockTop + 28);
-    doc.text(`₹${sgst.toFixed(2)}`, taxLeft + 120, taxBlockTop + 28, { align: 'right', width: 100 });
-
-    doc.strokeColor('#dddddd').lineWidth(0.5)
-        .moveTo(taxLeft, taxBlockTop + 44)
-        .lineTo(taxLeft + 220, taxBlockTop + 44)
-        .stroke();
-
     doc.font('Helvetica-Bold').fontSize(11).fillColor('#000000');
-    doc.text('Total', taxLeft, taxBlockTop + 50);
-    doc.text(`₹${totalAmount.toFixed(2)}`, taxLeft + 120, taxBlockTop + 50, { align: 'right', width: 100 });
+    doc.text('Total', taxLeft, taxBlockTop);
+    doc.text(`Rs. ${finalTotal}`, taxLeft + 120, taxBlockTop, { align: 'right', width: 100 });
 
     // --- Amount in words ---
     const amountWordsY = taxBlockTop + 80;
@@ -288,27 +273,8 @@ const drawInvoice = (doc, video, user) => {
         width: contentWidth,
     });
 
-    // --- Payment / Bank details section ---
-    const paymentTop = amountWordsY + 30;
-    const qrBoxSize = 90;
-
-    doc.fillColor('#000000').fontSize(10).font('Helvetica-Bold');
-    doc.text('Pay using UPI:', marginLeft, paymentTop);
-
-    doc.strokeColor('#bbbbbb').lineWidth(1)
-        .rect(marginLeft, paymentTop + 14, qrBoxSize, qrBoxSize)
-        .stroke();
-
-    const bankLeft = marginLeft + qrBoxSize + 30;
-    doc.font('Helvetica-Bold').text('Bank Details:', bankLeft, paymentTop);
-    doc.font('Helvetica').fontSize(9).fillColor('#000000');
-    doc.text('Bank: YES BANK', bankLeft, paymentTop + 14);
-    doc.text('Account #: 66789999222445', bankLeft, paymentTop + 26);
-    doc.text('IFSC: YESBBIN4567', bankLeft, paymentTop + 38);
-    doc.text('Branch: Kodihalli', bankLeft, paymentTop + 50);
-
     // --- Company Address (Shifted to Bottom) ---
-    const addressTop = paymentTop + qrBoxSize + 25;
+    const addressTop = amountWordsY + 50;
     doc.strokeColor("#aaaaaa").lineWidth(0.5).moveTo(marginLeft, addressTop - 10).lineTo(marginLeft + contentWidth, addressTop - 10).stroke();
 
     doc.font('Helvetica-Bold').fontSize(9).fillColor('#111a45');

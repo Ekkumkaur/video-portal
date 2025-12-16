@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -45,20 +46,9 @@ const Videos = () => {
     const [isProcessingPayment, setIsProcessingPayment] = useState(false);
     const [selectedVideo, setSelectedVideo] = useState<any | null>(null);
     const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-    const [cardNumber, setCardNumber] = useState("4242 4242 4242 4242");
-    const [paymentMethod, setPaymentMethod] = useState("razorpay"); // 'razorpay' or 'test-card'
+    const navigate = useNavigate();
     const { Razorpay } = useRazorpay();
 
-    const getCardType = (number: string) => {
-        const cleanNum = number.replace(/\D/g, "");
-        if (/^4/.test(cleanNum)) return "VISA";
-        if (/^5[1-5]/.test(cleanNum)) return "MASTERCARD";
-        if (/^3[47]/.test(cleanNum)) return "AMEX";
-        if (/^6(?:011|5)/.test(cleanNum)) return "DISCOVER";
-        if (/^35(?:2[89]|[3-8][0-9])/.test(cleanNum)) return "JCB";
-        if (/^6[0-9]/.test(cleanNum)) return "RUPAY"; // Simplistic RuPay check
-        return null;
-    };
 
     useEffect(() => {
         fetchVideos();
@@ -225,51 +215,7 @@ const Videos = () => {
         });
     };
 
-    const handlePayment = async () => {
-        setIsProcessingPayment(true);
 
-        try {
-            // Mock Payment ID generation - In reality this comes from the gateway SDK
-            const mockPaymentId = `TEST-PAYMENT-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
-
-            if (!currentVideoId) {
-                throw new Error("No video ID found");
-            }
-
-            console.log("Sending Payment Verify Payload:", { videoId: currentVideoId, paymentId: mockPaymentId });
-
-            await verifyPayment({
-                videoId: currentVideoId,
-                paymentId: mockPaymentId
-            });
-
-            setVideos((prev) =>
-                prev.map((v) =>
-                    v.id === currentVideoId ? { ...v, status: "completed" } : v
-                )
-            );
-
-            // Refetch to ensure backend state is synced
-            await fetchVideos();
-
-            setShowPaymentModal(false);
-            setCurrentVideoId(null);
-
-            toast({
-                title: "Payment Successful!",
-                description: "Your video has been uploaded and payment verified.",
-            });
-        } catch (error: any) {
-            console.error("Payment failed", error);
-            toast({
-                variant: "destructive",
-                title: "Payment Failed",
-                description: error.response?.data?.message || "There was an error verifying your payment.",
-            });
-        } finally {
-            setIsProcessingPayment(false);
-        }
-    };
 
     const handleRazorpayPayment = async () => {
         setIsProcessingPayment(true);
@@ -307,6 +253,7 @@ const Videos = () => {
                             title: "Payment Successful",
                             description: "Razorpay payment verified successfully.",
                         });
+                        navigate("/thank-you", { state: { type: "payment" } });
                     } catch (verifyError) {
                         console.error("Verification failed", verifyError);
                         toast({
@@ -348,13 +295,7 @@ const Videos = () => {
         }
     };
 
-    const onPayClick = () => {
-        if (paymentMethod === 'razorpay') {
-            handleRazorpayPayment();
-        } else {
-            handlePayment();
-        }
-    }
+
 
     const formatFileSize = (bytes: number) => {
         if (bytes === 0) return "0 Bytes";
@@ -420,7 +361,7 @@ const Videos = () => {
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 className={`glass-card p-12 border-2 border-dashed transition-all duration-300 ${isDragging
-                    ? "border-primary bg-primary/5 scale-[1.02]"
+                    ? "border-primary bg-primary/5 scale-[14992]"
                     : "border-border hover:border-primary/50"
                     }`}
             >
@@ -576,71 +517,18 @@ const Videos = () => {
                         </div>
 
                         <div className="space-y-4">
-                            {/* Payment Method Selector */}
-                            <div className="flex gap-4 p-1 bg-secondary/20 rounded-lg">
-                                <button
-                                    className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${paymentMethod === 'razorpay' ? 'bg-primary text-primary-foreground shadow-sm' : 'hover:bg-secondary/40 text-muted-foreground'}`}
-                                    onClick={() => setPaymentMethod('razorpay')}
-                                >
-                                    Razorpay (Recommended)
-                                </button>
-                                <button
-                                    className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${paymentMethod === 'test-card' ? 'bg-primary text-primary-foreground shadow-sm' : 'hover:bg-secondary/40 text-muted-foreground'}`}
-                                    onClick={() => setPaymentMethod('test-card')}
-                                >
-                                    Test Card
-                                </button>
+                            <div className="p-5 border border-primary/50 bg-primary/20 rounded-xl text-center shadow-sm animate-in fade-in slide-in-from-top-2">
+                                <p className="text-base font-medium text-foreground/90">
+                                    You will be redirected to Razorpay secure checkout to complete your payment of <span className="font-bold text-primary">₹ 1499</span>.
+                                </p>
                             </div>
-
-                            {paymentMethod === 'test-card' ? (
-                                <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="card" className="text-foreground">Card Number</Label>
-                                        <div className="relative">
-                                            <Input
-                                                id="card"
-                                                placeholder="0000 0000 0000 0000"
-                                                className="font-mono bg-background/50 pr-16"
-                                                value={cardNumber}
-                                                onChange={(e) => {
-                                                    const val = e.target.value.replace(/\D/g, '').slice(0, 16);
-                                                    setCardNumber(val.replace(/(.{4})/g, '$1 ').trim());
-                                                }}
-                                            />
-                                            <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                                                {getCardType(cardNumber) && (
-                                                    <span className="font-bold text-xs px-2 py-1 rounded bg-primary/20 text-primary">
-                                                        {getCardType(cardNumber)}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="expiry" className="text-foreground">Expiry</Label>
-                                            <Input id="expiry" placeholder="MM/YY" className="bg-background/50" />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label htmlFor="cvc" className="text-foreground">CVC</Label>
-                                            <Input id="cvc" placeholder="123" className="bg-background/50" maxLength={3} />
-                                        </div>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="p-4 border border-blue-500/30 bg-blue-500/10 rounded-lg text-center animate-in fade-in slide-in-from-top-2">
-                                    <p className="text-sm text-blue-200">
-                                        You will be redirected to Razorpay secure checkout to complete your payment of <span className="font-bold">₹ 1499</span>.
-                                    </p>
-                                </div>
-                            )}
                         </div>
 
                         <Button
                             variant="hero"
                             size="lg"
                             className="w-full"
-                            onClick={onPayClick}
+                            onClick={handleRazorpayPayment}
                             disabled={isProcessingPayment}
                         >
                             {isProcessingPayment ? (
