@@ -29,6 +29,8 @@ import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 
+import PixelTracker from "@/components/PixelTracker";
+
 const App = () => {
   useEffect(() => {
     AOS.init({
@@ -44,6 +46,7 @@ const App = () => {
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <PixelTracker />
             <Routes>
               <Route element={<PublicLayout />}>
                 <Route path="/" element={<Index />} />

@@ -13,6 +13,8 @@ export const ENDPOINTS = {
     },
     PAYMENT: {
         VERIFY: '/api/video/verify-payment',
+        RAZORPAY_ORDER: '/api/payment/order', // Added Razorpay Order Endpoint
+        RAZORPAY_VERIFY: '/api/payment/verify', // Added Razorpay Verify Endpoint
     },
     USERS: {
         LIST: '/api/users',

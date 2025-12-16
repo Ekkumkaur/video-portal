@@ -8,7 +8,16 @@ export const verifyPayment = async (data: { videoId: string; paymentId: string }
         },
     });
     return response.data;
+};
 
+export const createRazorpayOrder = async (amount: number) => {
+    const response = await api.post(ENDPOINTS.PAYMENT.RAZORPAY_ORDER, { amount });
+    return response.data;
+};
+
+export const verifyRazorpayPayment = async (data: any) => {
+    const response = await api.post(ENDPOINTS.PAYMENT.RAZORPAY_VERIFY, data);
+    return response.data;
 };
 
 export const downloadInvoiceAPI = async (videoId: string) => {
