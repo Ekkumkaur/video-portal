@@ -69,14 +69,15 @@ const Footer: React.FC = () => {
             </div>
             <ul className="space-y-3">
               {[
-                "Code of Conduct in Team Dougouts",
-                "BRPL Commercial Guidelines",
-                "Cricket Rulebook",
-                "Cricket PMOA Guideline",
+                { name: "Privacy & Policy", path: "/privacy-policy" },
+                { name: "Terms & Condition", path: "/terms-and-conditions" },
+                { name: "Cricket Rulebook", path: "/cricket-rulebook" },
               ].map((item) => (
-                <li key={item} className="flex items-center gap-2 group cursor-pointer hover:translate-x-1 transition-transform">
+                <li key={item.name} className="flex items-center gap-2 group cursor-pointer hover:translate-x-1 transition-transform">
                   <span className="text-[#FFC928] text-[10px]">▶</span>
-                  <span className="text-gray-200 hover:text-white transition-colors">{item}</span>
+                  <Link to={item.path} className="text-gray-200 hover:text-white transition-colors">
+                    {item.name}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -91,9 +92,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-3">
               {[
                 { name: "Contact Us", path: "/contact-us" },
-                { name: "News", path: "#" },
-                { name: "Privacy & Policy", path: "/privacy-policy" },
-                { name: "Terms & Condition", path: "/terms-and-conditions" },
+                { name: "News", path: "#" }
               ].map((item) => (
                 <li key={item.name} className="flex items-center gap-2 group cursor-pointer hover:translate-x-1 transition-transform">
                   <span className="text-[#FFC928] text-[10px]">▶</span>
@@ -108,7 +107,7 @@ const Footer: React.FC = () => {
               <h4 className="text-[#FFC928] text-sm font-semibold mb-3">Follow Us</h4>
               <div className="flex items-center gap-3">
                 <a
-                  href="https://www.instagram.com/accounts/login/?next=%2Fthedigitalhubsolution%2F&source=omni_redirect"
+                  href="https://www.instagram.com/brplofficial/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-8 h-8 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors text-white"
@@ -116,7 +115,7 @@ const Footer: React.FC = () => {
                   <Instagram size={16} />
                 </a>
                 <a
-                  href="https://www.facebook.com/thedigitalhubsolution/"
+                  href="https://www.facebook.com/profile.php?id=61584782136820"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-8 h-8 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors text-white"
@@ -124,15 +123,7 @@ const Footer: React.FC = () => {
                   <Facebook size={16} />
                 </a>
                 <a
-                  href="https://www.linkedin.com/company/digital-hub-solution/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-8 h-8 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors text-white"
-                >
-                  <Linkedin size={16} />
-                </a>
-                <a
-                  href="https://x.com/dhubsolution/"
+                  href="https://x.com/BRPLOfficial"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-8 h-8 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors text-white"

@@ -63,10 +63,9 @@ const Header = () => {
                         <div className="h-4 w-px bg-slate-300" />
 
                         <div className="flex items-center gap-3 md:gap-4">
-                            <a href="https://www.facebook.com/thedigitalhubsolution/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition-colors"><Facebook className="w-3.5 h-3.5 fill-current" /></a>
-                            <a href="https://x.com/dhubsolution/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition-colors"><Twitter className="w-3.5 h-3.5 fill-current" /></a>
-                            <a href="https://www.linkedin.com/company/digital-hub-solution/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition-colors"><Linkedin className="w-3.5 h-3.5 fill-current" /></a>
-                            <a href="https://www.instagram.com/accounts/login/?next=%2Fthedigitalhubsolution%2F&source=omni_redirect" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition-colors"><Instagram className="w-3.5 h-3.5 stroke-[2]" /></a>
+                            <a href="https://www.facebook.com/profile.php?id=61584782136820" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition-colors"><Facebook className="w-3.5 h-3.5 fill-current" /></a>
+                            <a href="https://x.com/BRPLOfficial" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition-colors"><Twitter className="w-3.5 h-3.5 fill-current" /></a>
+                            <a href="https://www.instagram.com/brplofficial/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition-colors"><Instagram className="w-3.5 h-3.5 stroke-[2]" /></a>
                         </div>
                     </div>
                 </div>
