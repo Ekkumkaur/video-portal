@@ -20,3 +20,13 @@ export const verifyOtp = async (mobile: string, otp: string) => {
     const response = await api.post(ENDPOINTS.AUTH.VERIFY_OTP, { mobile, otp });
     return response.data;
 };
+
+export const forgotPassword = async (email: string) => {
+    const response = await api.post(ENDPOINTS.AUTH.FORGOT_PASSWORD, { email });
+    return response.data;
+};
+
+export const resetPassword = async (data: any) => {
+    const response = await api.post(ENDPOINTS.AUTH.RESET_PASSWORD, data);
+    return response.data;
+};

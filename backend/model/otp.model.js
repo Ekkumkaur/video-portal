@@ -3,7 +3,11 @@ const mongoose = require('mongoose');
 const otpSchema = new mongoose.Schema({
     mobile: {
         type: String,
-        required: true,
+        required: false, // Changed from true to allow email-only OTPs
+    },
+    email: {
+        type: String,
+        required: false,
     },
     otp: {
         type: String,

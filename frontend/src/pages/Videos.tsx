@@ -253,7 +253,7 @@ const Videos = () => {
                             title: "Payment Successful",
                             description: "Razorpay payment verified successfully.",
                         });
-                        navigate("/thank-you", { state: { type: "payment" } });
+                        navigate("/payment-successfull");
                     } catch (verifyError) {
                         console.error("Verification failed", verifyError);
                         toast({
@@ -544,9 +544,7 @@ const Videos = () => {
                             )}
                         </Button>
 
-                        <p className="text-xs text-center text-muted-foreground">
-                            Secure payment powered by Stripe (Test Mode)
-                        </p>
+
                     </div>
                 </DialogContent>
             </Dialog>

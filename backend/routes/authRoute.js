@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { login, register, upload, sendOtp, verifyOtp } = require('../controller/authController');
+const { login, register, upload, sendOtp, verifyOtp, forgotPassword, resetPassword } = require('../controller/authController');
 const authenticate = require('../middleware/authMiddleware');
 const User = require('../model/user.model');
 
@@ -11,6 +11,8 @@ router.post('/register', upload.single('trail_video'), register);
 
 router.post('/send-otp', sendOtp);
 router.post('/verify-otp', verifyOtp);
+router.post('/forgot-password', forgotPassword);
+router.post('/reset-password', resetPassword);
 
 router.get('/profile', authenticate, async (req, res) => {
   try {

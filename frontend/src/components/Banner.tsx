@@ -92,7 +92,7 @@ const Banner = () => {
 
                 {/* Content Overlay */}
                 <div className="absolute inset-0 z-10 w-full h-full max-w-[1400px] mx-auto px-4 md:px-10 lg:px-16 flex items-center">
-                  <div className="absolute left-2 md:left-6 lg:left-10 top-1/2 -translate-y-1/2 hidden md:block select-none pointer-events-none">
+                  {/* <div className="absolute left-2 md:left-6 lg:left-10 top-1/2 -translate-y-1/2 hidden md:block select-none pointer-events-none">
                     <span
                       className="block text-[170px] lg:text-[170px] xl:text-[80px] font-black text-transparent leading-none opacity-60 tracking-[0.15em] filter blur-[0.2px]"
                       style={{
@@ -104,7 +104,7 @@ const Banner = () => {
                     >
                       CRICKET
                     </span>
-                  </div>
+                  </div> */}
 
                   <div className="flex flex-col items-end justify-center w-full max-w-4xl ml-auto text-right gap-1.5 md:gap-1.5 lg:gap-1.5 pr-4 md:pr-10 lg:pr-24">
                     <h1 className="text-2xl sm:text-3xl md:text-[34px] lg:text-[40px] xl:text-[44px] font-extrabold text-[#f4f7fb] uppercase leading-tight drop-shadow-[0_4px_18px_rgba(0,0,0,0.9)]">

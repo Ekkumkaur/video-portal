@@ -21,6 +21,7 @@ import Career from "./pages/Career";
 import ContactUs from "./pages/ContactUs";
 import Registration from "./pages/Registration";
 import ThankYou from "./pages/ThankYou";
+import PaymentSuccessful from "./pages/PaymentSuccessful";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsAndConditions from "./pages/TermsAndConditions";
 
@@ -62,6 +63,7 @@ const App = () => {
               </Route>
 
               <Route path="/thank-you" element={<ThankYou />} />
+              <Route path="/payment-successfull" element={<PaymentSuccessful />} />
 
               <Route element={<AdminLayout />}>
                 <Route path="/admin/dashboard" element={<AdminDashboard />} />

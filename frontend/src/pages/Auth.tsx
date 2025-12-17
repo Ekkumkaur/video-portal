@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Play, Mail, Lock, User, ArrowLeft, Loader2, Phone, MapPin, FileDigit, KeyRound, CheckCircle2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { login, register, sendOtp, verifyOtp } from "@/apihelper/auth";
+import { login, register, sendOtp, verifyOtp, forgotPassword, resetPassword } from "@/apihelper/auth";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
@@ -132,7 +132,7 @@ const Auth = ({ forceRegister }: AuthProps) => {
       if (response.success) {
         toast({
           title: "OTP Sent",
-          description: `OTP sent to ${formData.mobile}. (Check Console for Demo)`,
+          description: `OTP sent to ${formData.mobile}.`,
         });
         console.log("DEMO OTP:", response.otp);
         setShowOtpModal(true);
@@ -171,6 +171,85 @@ const Auth = ({ forceRegister }: AuthProps) => {
       });
     } finally {
       setIsVerifyingOtp(false);
+    }
+  };
+
+  // Forgot Password State & Handlers
+  const [showForgotModal, setShowForgotModal] = useState(false);
+  const [forgotStep, setForgotStep] = useState(1); // 1: Email, 2: OTP & New Password
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotOtp, setForgotOtp] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [isForgotLoading, setIsForgotLoading] = useState(false);
+
+  const handleForgotPassword = async () => {
+    if (!forgotEmail) {
+      toast({
+        variant: "destructive",
+        title: "Email Required",
+        description: "Please enter your email address to reset password.",
+      });
+      return;
+    }
+
+    setIsForgotLoading(true);
+    try {
+      const response = await forgotPassword(forgotEmail);
+      if (response.success) {
+        toast({
+          title: "OTP Sent",
+          description: "Password reset OTP has been sent to your email.",
+        });
+        setForgotStep(2);
+      }
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Failed",
+        description: error.response?.data?.message || "Failed to send reset OTP.",
+      });
+    } finally {
+      setIsForgotLoading(false);
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (!forgotOtp || !newPassword) {
+      toast({
+        variant: "destructive",
+        title: "Missing Fields",
+        description: "Please enter the OTP and your new password.",
+      });
+      return;
+    }
+
+    setIsForgotLoading(true);
+    try {
+      const response = await resetPassword({
+        email: forgotEmail,
+        otp: forgotOtp,
+        newPassword
+      });
+
+      if (response.success) {
+        toast({
+          title: "Password Reset Successful",
+          description: "Your password has been reset. Please login with new password.",
+        });
+        setShowForgotModal(false);
+        setForgotStep(1);
+        setForgotEmail("");
+        setForgotOtp("");
+        setNewPassword("");
+      }
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Reset Failed",
+        description: error.response?.data?.message || "Failed to reset password.",
+      });
+    } finally {
+      setIsForgotLoading(false);
     }
   };
 
@@ -486,6 +565,98 @@ const Auth = ({ forceRegister }: AuthProps) => {
                       />
                     </div>
                   </div>
+
+                  <div className="flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => setShowForgotModal(true)}
+                      className="text-sm text-primary hover:underline font-medium"
+                    >
+                      Forgot Password?
+                    </button>
+                  </div>
+
+                  {/* Forgot Password Modal */}
+                  <Dialog open={showForgotModal} onOpenChange={(open) => {
+                    setShowForgotModal(open);
+                    if (!open) setForgotStep(1);
+                  }}>
+                    <DialogContent className="sm:max-w-md">
+                      <DialogHeader>
+                        <DialogTitle>Reset Password</DialogTitle>
+                        <DialogDescription>
+                          {forgotStep === 1
+                            ? "Enter your email to receive a password reset OTP."
+                            : "Enter the OTP sent to your email and your new password."}
+                        </DialogDescription>
+                      </DialogHeader>
+
+                      <div className="space-y-4 py-4">
+                        {forgotStep === 1 ? (
+                          <div className="space-y-2">
+                            <Label htmlFor="forgot-email">Email Address</Label>
+                            <div className="relative">
+                              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                              <Input
+                                id="forgot-email"
+                                type="email"
+                                placeholder="Enter your email"
+                                className="pl-9"
+                                value={forgotEmail}
+                                onChange={(e) => setForgotEmail(e.target.value)}
+                              />
+                            </div>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="space-y-2">
+                              <Label htmlFor="forgot-otp">Enter OTP</Label>
+                              <div className="flex justify-center">
+                                <InputOTP
+                                  maxLength={4}
+                                  value={forgotOtp}
+                                  onChange={(value) => setForgotOtp(value)}
+                                >
+                                  <InputOTPGroup>
+                                    <InputOTPSlot index={0} />
+                                    <InputOTPSlot index={1} />
+                                    <InputOTPSlot index={2} />
+                                    <InputOTPSlot index={3} />
+                                  </InputOTPGroup>
+                                </InputOTP>
+                              </div>
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="new-password">New Password</Label>
+                              <div className="relative">
+                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                                <Input
+                                  id="new-password"
+                                  type="password"
+                                  placeholder="Enter new password"
+                                  className="pl-9"
+                                  value={newPassword}
+                                  onChange={(e) => setNewPassword(e.target.value)}
+                                />
+                              </div>
+                            </div>
+                          </>
+                        )}
+
+                        <Button
+                          className="w-full"
+                          onClick={forgotStep === 1 ? handleForgotPassword : handleResetPassword}
+                          disabled={isForgotLoading}
+                        >
+                          {isForgotLoading
+                            ? <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                            : (forgotStep === 1 ? "Send OTP" : "Reset Password")
+                          }
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+
                 </>
               )}
 
@@ -564,7 +735,7 @@ const Auth = ({ forceRegister }: AuthProps) => {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </div >
   );
 };
 

@@ -75,4 +75,51 @@ const sendInvoiceEmail = async (user, video, downloadLink, previewLink, pdfBuffe
     }
 };
 
-module.exports = { sendInvoiceEmail };
+const sendPasswordResetEmail = async (email, otp, name) => {
+    try {
+        const logoPath = path.join(__dirname, '../../frontend/public/logo.png');
+
+        const mailOptions = {
+            from: '"Beyond Reach Premiere League" <ektadev531@gmail.com>',
+            to: email,
+            subject: 'Password Reset OTP - BRPL',
+            html: `
+            <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; padding: 20px;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <img src="cid:logo" alt="BRPL Logo" style="width: 80px;" />
+                    <h2 style="color: #444; margin-top: 10px;">Beyond Reach Premiere League</h2>
+                </div>
+                
+                <hr style="border: 0; border-top: 1px solid #eee;" />
+                
+                <p>Hello ${name || 'User'},</p>
+                <p>You requested a password reset. Please use the following OTP to reset your password:</p>
+                
+                <div style="background-color: #f0f0f0; padding: 15px; border-radius: 5px; text-align: center; font-size: 24px; letter-spacing: 5px; font-weight: bold; margin: 20px 0;">
+                    ${otp}
+                </div>
+                
+                <p>If you did not request this, please ignore this email.</p>
+                
+                <p style="font-size: 12px; color: #777; margin-top: 30px;">This OTP will expire in 5 minutes.</p>
+            </div>
+            `,
+            attachments: [
+                {
+                    filename: 'logo.png',
+                    path: logoPath,
+                    cid: 'logo'
+                }
+            ]
+        };
+
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Reset OTP sent: %s', info.messageId);
+        return info;
+    } catch (error) {
+        console.error('Error sending reset email:', error);
+        throw error;
+    }
+};
+
+module.exports = { sendInvoiceEmail, sendPasswordResetEmail };

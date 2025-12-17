@@ -4,6 +4,8 @@ export const ENDPOINTS = {
         REGISTER: '/auth/register',
         SEND_OTP: '/auth/send-otp',
         VERIFY_OTP: '/auth/verify-otp',
+        FORGOT_PASSWORD: '/auth/forgot-password',
+        RESET_PASSWORD: '/auth/reset-password',
     },
     VIDEOS: {
         UPLOAD: '/api/video/upload',

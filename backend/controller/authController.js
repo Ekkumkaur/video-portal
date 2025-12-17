@@ -179,10 +179,82 @@ const verifyOtp = async (req, res) => {
   }
 };
 
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found with this email" });
+    }
+
+    const otp = Math.floor(1000 + Math.random() * 9000).toString(); // 4 digit random OTP
+
+    // Save/Update OTP
+    await Otp.deleteMany({ email }); // Clear old
+    await Otp.create({ email, otp });
+
+    // Send Email
+    // Importing here to avoid circular dependency issues if any, though likely fine at top
+    // assuming sendPasswordResetEmail is imported at top or we import it here
+    const { sendPasswordResetEmail } = require('../utils/emailService');
+    await sendPasswordResetEmail(email, otp, user.fname);
+
+    console.log(`Reset OTP for ${email}: ${otp}`);
+
+    res.status(200).json({
+      success: true,
+      message: "Password reset OTP sent to your email"
+    });
+
+  } catch (error) {
+    console.error("Forgot Password Error:", error);
+    res.status(500).json({ message: "Failed to process request", error: error.message });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+
+    if (!email || !otp || !newPassword) {
+      return res.status(400).json({ message: "Email, OTP and New Password are required" });
+    }
+
+    // Verify OTP
+    const otpRecord = await Otp.findOne({ email, otp });
+    if (!otpRecord) {
+      return res.status(400).json({ message: "Invalid or expired OTP" });
+    }
+
+    // Update Password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await User.updateOne({ email }, { password: hashedPassword });
+
+    // Cleanup OTP
+    await Otp.deleteOne({ _id: otpRecord._id });
+
+    res.status(200).json({
+      success: true,
+      message: "Password reset successfully. You can now login."
+    });
+
+  } catch (error) {
+    console.error("Reset Password Error:", error);
+    res.status(500).json({ message: "Failed to reset password", error: error.message });
+  }
+};
+
 module.exports = {
   login,
   register,
   upload,
   sendOtp,
-  verifyOtp
+  verifyOtp,
+  forgotPassword,
+  resetPassword
 };

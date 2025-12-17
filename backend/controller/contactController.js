@@ -27,7 +27,7 @@ exports.submitContact = async (req, res) => {
 
         // 2. Send Email to Company
         const mailOptions = {
-            from: process.env.EMAIL_USER, // Sender address
+            from: process.env.EMAIL_USER || 'ektadev531@gmail.com', // Sender address
             to: process.env.COMPANY_EMAIL || 'ektadev531@gmail.com', // Receiver address (Company)
             subject: `New Contact Inquiry from ${firstName} ${lastName}`,
             html: `
