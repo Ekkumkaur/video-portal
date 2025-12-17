@@ -10,18 +10,18 @@ const slides = [
   },
   {
     id: 1,
-    background: "/bg-cricket1.jpg",
-    // background: "/banner.png",
+    // background: "/bg-cricket1.jpg",
+    background: "/banner-2.png",
     title: "BHARAT KI LEAGUE",
     subtitle: "BHARTIYO KA SAPNA",
   },
-  {
-    id: 2,
-    background: "/bg-cricket1.jpg",
-    // background: "/banner.png",
-    title: "BHARAT KI LEAGUE",
-    subtitle: "BHARTIYO KA SAPNA",
-  },
+  // {
+  //   id: 2,
+  //   background: "/bg-cricket1.jpg",
+  //   // background: "/banner.png",
+  //   title: "BHARAT KI LEAGUE",
+  //   subtitle: "BHARTIYO KA SAPNA",
+  // },
 ];
 
 const Banner = () => {

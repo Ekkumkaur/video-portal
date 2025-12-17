@@ -42,7 +42,7 @@ const MissionVisionSection: React.FC = () => {
                             {activeTab === 'mission' ? (
                                 <div className="space-y-6 text-gray-300 text-lg leading-relaxed font-sans">
                                     <p>
-                                        For way too long, cricket has been a game for the privileged. Access to coaching, exposure, and opportunity usually decide who gets to play at the national level. But what about those who can't afford that journey? At BRPL, our mission is to empower cricket players at the grassroots level and create an inclusive ecosystem.
+                                        For way too long, cricket has been a game for the privileged. Access to coaching, exposure, and opportunity usually decide who gets to play at the national level. At BRPL, our mission is to empower cricket players at the grassroots level and create an inclusive ecosystem.
                                     </p>
                                     <p>
                                         We believe that no matter their background, every aspiring cricketer deserves a platform to shine. Our team will interact with local communities, encourage youth participation, and connect with them through local digital creators. To ensure widespread participation, we will conduct nationwide trials and discover the next generation of India's cricket stars. We promise to treat every participant fairly and provide them with equal opportunities and long-term growth.

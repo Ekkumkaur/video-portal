@@ -15,7 +15,7 @@ const teams = [
         logo: "/4.png",
     },
     {
-        name: "Norther Dabanggss",
+        name: "Northern Dabanggs",
         logo: "/3.png",
     },
     {

@@ -38,8 +38,8 @@ const Header = () => {
                     {/* Contact Info (Hide on small screens) */}
                     <div className="hidden md:flex items-center gap-6">
                         <div className="flex items-center gap-2">
-                            <Phone className="w-4 h-4 fill-current" />
-                            <a href="tel:+918860342926" className="text-[13px] font-bold tracking-wide hover:text-blue-600 transition-colors">+(91) 8860342926</a>
+                            {/* <Phone className="w-4 h-4 fill-current" /> */}
+                            {/* <a href="tel:+918860342926" className="text-[13px] font-bold tracking-wide hover:text-blue-600 transition-colors">+(91) 8860342926</a> */}
                         </div>
                         <div className="h-4 w-px bg-slate-300" />
                         <div className="flex items-center gap-2">

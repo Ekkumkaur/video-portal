@@ -243,37 +243,29 @@ const Auth = ({ forceRegister }: AuthProps) => {
 
       {/* Left Panel - Branding (Hidden on mobile) */}
       <div className="hidden lg:flex flex-1 flex-col justify-between p-12 relative overflow-hidden">
-        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/bg-cricket1.jpg')" }} />
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/80 to-black/60" />
+        {/* Background Image */}
+        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/auth1.png')" }} />
 
         <Link to="/" className="relative z-10 flex items-center gap-2">
-          <img src="/logo.png" alt="BRPL Logo" className="w-20 h-20 object-contain" />
-          <span className="text-xl font-display font-bold text-foreground">Beyond Reach Premier League</span>
+          <img src="/logo.png" alt="BRPL Logo" className="w-80 h-80 object-contain" />
         </Link>
 
-        <div className="relative z-10 max-w-md">
-          <h1 className="text-4xl font-display font-bold text-foreground mb-4">
-            Start your <span className="gradient-text">Innings</span> with BRPL
-          </h1>
-          <p className="text-lg text-muted-foreground">
+        <div className="relative z-10 max-w-lg">
+          <h2 className="text-2xl font-bold text-white mb-6">
+            Start your Innings with BRPL
+          </h2>
+          <p className="text-lg text-white/90 mb-8 max-w-md leading-relaxed">
             Upload match highlights, manage teams, and showcase talent on the premier cricket platform.
           </p>
+
+          <div className="flex items-center gap-2 mt-4">
+            <span className="text-5xl lg:text-6xl font-extrabold text-[#FFC928] drop-shadow-md ml-auto block w-fit">₹ 1499.99</span>
+          </div>
         </div>
 
-        <div className="relative z-10 flex items-center gap-4">
-          <div className="flex -space-x-2">
-            {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/30 to-accent/30 border-2 border-background flex items-center justify-center text-xs font-bold text-primary"
-              >
-                {i === 1 ? "🏏" : i === 2 ? "🏆" : i === 3 ? "⚡" : "🏟️"}
-              </div>
-            ))}
-          </div>
-          <p className="text-sm text-muted-foreground">
-            Join <span className="text-foreground font-medium">500+</span> Teams & Players
-          </p>
+        {/* Removed the bottom "Join 500+ Teams" section as it wasn't in the provided image/request focus which emphasized the price and main content */}
+        <div className="relative z-10">
+          {/* Placeholder for spacing if needed, or remove completely if not needed at bottom */}
         </div>
       </div>
 

@@ -12,7 +12,7 @@ const PageBanner: React.FC<PageBannerProps> = ({ title, currentPage }) => {
         <div className="relative w-full h-auto md:h-[350px] lg:h-[400px] bg-[#111a45] overflow-hidden">
             {/* Mobile Background Image - Maintains Aspect Ratio */}
             <img
-                src="/about-us.png"
+                src="/tenis.png"
                 alt="Banner"
                 className="block md:hidden w-full h-[150px] object-cover"
             />
@@ -20,11 +20,11 @@ const PageBanner: React.FC<PageBannerProps> = ({ title, currentPage }) => {
             {/* Desktop Background Image - Full Opacity */}
             <div
                 className="hidden md:block absolute inset-0 bg-cover bg-center"
-                style={{ backgroundImage: "url('/about-us.png')" }}
+                style={{ backgroundImage: "url('/tenis.png')" }}
             />
 
-            {/* Subtle overlay */}
-            <div className="absolute inset-0 bg-black/10" />
+            {/* Theme overlay */}
+            <div className="absolute inset-0 bg-[#0b2a5b]/70" />
 
             {/* Content Overlay */}
             <div className="absolute inset-0 z-10 container mx-auto px-4 md:px-8 lg:px-12 flex flex-col justify-center h-full">

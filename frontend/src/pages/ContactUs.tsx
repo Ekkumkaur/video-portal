@@ -11,7 +11,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Mail, MapPin, Phone } from "lucide-react";
 import SEO from "@/components/SEO";
 
 const ContactUs = () => {
@@ -154,16 +154,16 @@ const ContactUs = () => {
                                 </p>
 
                                 <div className="space-y-4 text-sm md:text-base">
-                                    <div className="flex items-start gap-3">
-                                        <span className="mt-0.5">📞</span>
+                                    {/* <div className="flex items-start gap-3">
+                                        <Phone className="w-5 h-5 mt-0.5 flex-shrink-0" />
                                         <span>+(91) 8860342926</span>
-                                    </div>
+                                    </div> */}
                                     <div className="flex items-start gap-3">
-                                        <span className="mt-0.5">✉️</span>
+                                        <Mail className="w-5 h-5 mt-0.5 flex-shrink-0" />
                                         <span>info@brpl.net</span>
                                     </div>
                                     <div className="flex items-start gap-3">
-                                        <span className="mt-0.5">📍</span>
+                                        <MapPin className="w-5 h-5 mt-0.5 flex-shrink-0" />
                                         <span>
                                             Ground Floor, Suite G-01, Procapitus Business Park, D-247/4A, D Block,
                                             Sector 63, Noida, Uttar Pradesh 201309

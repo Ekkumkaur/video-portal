@@ -28,7 +28,7 @@ const Footer: React.FC = () => {
                 "North East Panthers",
                 "Central Strikers",
                 "Western Heroes",
-                "Norther Dabanggss",
+                "Northern Dabanggs",
                 "Southern Lions",
                 "Eastern Rhions",
               ].map((item) => (
