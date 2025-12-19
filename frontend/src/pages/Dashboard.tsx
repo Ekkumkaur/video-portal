@@ -80,7 +80,7 @@ const Dashboard = () => {
               <Button variant="hero" size="lg" asChild className="shadow-lg shadow-primary/20 hover:scale-105 transition-transform">
                 <Link to="/dashboard/videos">
                   <Upload className="w-5 h-5 mr-2" />
-                  Upload Highlight
+                  Upload your video
                 </Link>
               </Button>
             </div>
@@ -100,7 +100,7 @@ const Dashboard = () => {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card className="glass-card hover:border-primary/50 transition-colors group">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground group-hover:text-primary transition-colors">
@@ -127,21 +127,6 @@ const Dashboard = () => {
             <div className="text-2xl font-bold font-display">{stats.storageUsed}</div>
             <p className="text-xs text-muted-foreground mt-1">
               15GB available
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="glass-card hover:border-primary/50 transition-colors group">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground group-hover:text-green-500 transition-colors">
-              Engagement
-            </CardTitle>
-            <Activity className="h-4 w-4 text-green-500 group-hover:scale-110 transition-transform" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold font-display">Active</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              {stats.activeVideos} videos live
             </p>
           </CardContent>
         </Card>
@@ -188,26 +173,6 @@ const Dashboard = () => {
 
         {/* Quick Tips / Info */}
         <div className="space-y-4">
-          <h2 className="text-xl font-display font-semibold">Creator Tips</h2>
-          <Card className="glass-card bg-gradient-to-br from-primary/5 to-transparent border-primary/20">
-            <CardContent className="pt-6">
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary mt-1">
-                  <TrendingUp className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg mb-1">Boost your reach</h3>
-                  <p className="text-muted-foreground text-sm">
-                    Upload videos consistently to keep your audience engaged.
-                    Adding detailed descriptions helps with discoverability.
-                  </p>
-                  <Button variant="link" className="p-0 h-auto mt-4 text-primary">
-                    Learn more about analytics &rarr;
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
 
           <Card className="glass-card border-border">
             <CardContent className="pt-6">

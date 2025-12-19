@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
   pincode: { type: String, required: true },
   address1: { type: String, required: true },
   address2: { type: String },
-  aadhar: { type: String, required: true },
+  aadhar: { type: String, required: false },
   trail_video: { type: String }, // Path to the uploaded trail video file
   playerRole: { type: String },
   isPaid: { type: Boolean, default: false }

@@ -34,7 +34,7 @@ const Footer: React.FC = () => {
               ].map((item) => (
                 <li key={item} className="flex items-center gap-2 group cursor-pointer hover:translate-x-1 transition-transform">
                   <span className="text-[#FFC928] text-[10px]">▶</span>
-                  <span className="text-gray-200 hover:text-white transition-colors">{item}</span>
+                  <Link to="/teams" className="text-gray-200 hover:text-white transition-colors">{item}</Link>
                 </li>
               ))}
             </ul>
@@ -47,10 +47,16 @@ const Footer: React.FC = () => {
               <div className="h-[2px] w-[80px] bg-white/20"></div>
             </div>
             <ul className="space-y-3">
-              {["About Us", "Videos", "News & Events"].map((item) => (
-                <li key={item} className="flex items-center gap-2 group cursor-pointer hover:translate-x-1 transition-transform">
+              {[
+                { name: "About Us", path: "/about-us" },
+                { name: "Videos", path: "#" },
+                { name: "News & Events", path: "#" }
+              ].map((item) => (
+                <li key={item.name} className="flex items-center gap-2 group cursor-pointer hover:translate-x-1 transition-transform">
                   <span className="text-[#FFC928] text-[10px]">▶</span>
-                  <span className="text-gray-200 hover:text-white transition-colors">{item}</span>
+                  <Link to={item.path} className="text-gray-200 hover:text-white transition-colors">
+                    {item.name}
+                  </Link>
                 </li>
               ))}
             </ul>

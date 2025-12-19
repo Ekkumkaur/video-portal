@@ -4,10 +4,12 @@ const path = require('path');
 // Configure your SMTP transporter
 // ideally this should be from process.env
 const transporter = nodemailer.createTransport({
-    service: 'gmail', // Or your SMTP host
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
-        user: 'ektadev531@gmail.com', // Replace with environment variable
-        pass: 'iaaw zdey hzgw bqen' // Replace with environment variable
+        user: 'ektadev531@gmail.com',
+        pass: 'iaaw zdey hzgw bqen'
     }
 });
 
@@ -52,7 +54,7 @@ const sendInvoiceEmail = async (user, video, downloadLink, previewLink, pdfBuffe
 
                 <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
                     <p style="margin: 5px 0;"><strong>Transaction ID:</strong> ${video.paymentId}</p>
-                    <p style="margin: 5px 0;"><strong>Amount Paid:</strong> Rs. 1.0</p>
+                    <p style="margin: 5px 0;"><strong>Amount Paid:</strong> Rs. 1499</p>
                     <p style="margin: 5px 0;"><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
                 </div>
 
@@ -122,4 +124,34 @@ const sendPasswordResetEmail = async (email, otp, name) => {
     }
 };
 
-module.exports = { sendInvoiceEmail, sendPasswordResetEmail };
+const sendContactEmail = async (contactDetails) => {
+    try {
+        const { firstName, lastName, email, mobileNumber, message } = contactDetails;
+
+        const mailOptions = {
+            from: 'ektadev531@gmail.com',
+            to: process.env.COMPANY_EMAIL || 'info@brpl.net', // Receiver address (Company)
+            subject: `New Contact Inquiry from ${firstName} ${lastName}`,
+            html: `
+                <h3>New Contact Us Form Submission</h3>
+                <p><strong>Name:</strong> ${firstName} ${lastName}</p>
+                <p><strong>Email:</strong> ${email}</p>
+                <p><strong>Mobile:</strong> ${mobileNumber}</p>
+                <p><strong>Message:</strong></p>
+                <p>${message}</p>
+            `
+        };
+
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Contact email sent: %s', info.messageId);
+        return info;
+    } catch (error) {
+        console.error('Error sending contact email:', error);
+        // We don't throw here to avoid failing the DB save in the controller if email fails
+        // but the controller might want to know, so actually let's re-throw or handle there.
+        // The original controller code didn't fail the request if email failed.
+        // let's just log as consistent with other functions in this file.
+    }
+};
+
+module.exports = { sendInvoiceEmail, sendPasswordResetEmail, sendContactEmail };

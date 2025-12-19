@@ -59,7 +59,7 @@ const Auth = ({ forceRegister }: AuthProps) => {
     pincode: "",
     address1: "",
     address2: "",
-    aadhar: "",
+    // aadhar: "",
     otp: "",
     playerRole: "",
   });
@@ -338,7 +338,7 @@ const Auth = ({ forceRegister }: AuthProps) => {
           </p>
 
           <div className="flex items-center gap-2 mt-4">
-            <span className="text-5xl lg:text-6xl font-extrabold text-[#FFC928] drop-shadow-md ml-auto block w-fit">₹ 1499.99</span>
+            <span className="text-5xl lg:text-6xl font-extrabold text-[#FFC928] drop-shadow-md ml-auto block w-fit">₹ 1499</span>
           </div>
         </div>
 
@@ -507,27 +507,32 @@ const Auth = ({ forceRegister }: AuthProps) => {
                       <Input id="pincode" value={formData.pincode} onChange={handleChange} required placeholder="Enter Pincode" />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="zone_id" className="text-foreground">Zone ID</Label>
-                      <Input id="zone_id" value={formData.zone_id} onChange={handleChange} required placeholder="Enter Zone ID" />
+                      <Label htmlFor="zone_id" className="text-foreground">Zone</Label>
+                      <Select onValueChange={(val) => handleSelectChange(val, 'zone_id')} value={formData.zone_id}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Zone" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {[
+                            { zoneId: 1, zoneName: "North Zone" },
+                            { zoneId: 2, zoneName: "South Zone" },
+                            { zoneId: 3, zoneName: "East Zone" },
+                            { zoneId: 4, zoneName: "West Zone" },
+                            { zoneId: 5, zoneName: "Central Zone" },
+                            { zoneId: 6, zoneName: "North-East Zone" }
+                          ].map((zone) => (
+                            <SelectItem key={zone.zoneId} value={zone.zoneId.toString()}>
+                              {zone.zoneName}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
 
                   <Separator className="my-2" />
 
-                  {/* Verification Info */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="aadhar" className="text-foreground">Aadhar Number</Label>
-                      <div className="relative">
-                        <FileDigit className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                        <Input id="aadhar" className="pl-9" value={formData.aadhar} onChange={handleChange} required placeholder="Enter Aadhar Number" />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      {/* Removed OTP Field here as it is handled by modal now, or kept as readonly? user asked for modal. */}
-                      {/* I will remove it from here or keep it hidden/updated via state is best.*/}
-                    </div>
-                  </div>
+
                 </>
               ) : (
                 // Login Form

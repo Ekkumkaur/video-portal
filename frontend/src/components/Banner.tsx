@@ -1,5 +1,7 @@
 import React from "react";
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const slides = [
   {
@@ -12,7 +14,7 @@ const slides = [
   // {
   //   id: 1,
   //   // background: "/bg-cricket1.jpg",
-  //   background: "/banner-2.png",
+  //   // background: "/banner-2.png",
   //   title: "BHARAT KI LEAGUE",
   //   subtitle: "BHARTIYO KA SAPNA",
   // },
@@ -123,6 +125,16 @@ const Banner = () => {
                     >
                       {slide.subtitle}
                     </h2>
+
+                    {/* Registration Button */}
+                    <div className={`mt-8 ${index === current ? 'animate-fade-in-up duration-700 delay-300' : 'opacity-0'}`}>
+                      <Button asChild variant="hero" size="xl" className="font-bold text-lg px-10 shadow-xl hover:scale-105 transition-transform duration-300">
+                        <Link to="/auth?mode=register">
+                          REGISTRATION NOW
+                        </Link>
+                      </Button>
+                    </div>
+
                   </div>
                 </div>
               </div>

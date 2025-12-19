@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -8,10 +8,11 @@ import {
     Loader2,
     Upload,
     Plus,
-    Video,
+    Video as VideoIcon,
     Check,
     Eye,
     FileText,
+    RefreshCw,
 } from "lucide-react";
 
 import { useToast } from "@/hooks/use-toast";
@@ -49,6 +50,10 @@ const Videos = () => {
     const navigate = useNavigate();
     const { Razorpay } = useRazorpay();
 
+    // Hidden input ref for changing video
+    const changeVideoInputRef = useRef<HTMLInputElement>(null);
+    const [videoToChangeId, setVideoToChangeId] = useState<string | null>(null);
+
 
     useEffect(() => {
         fetchVideos();
@@ -69,8 +74,13 @@ const Videos = () => {
             }));
 
             setVideos(prev => {
-                const uploading = prev.filter(p => p.status !== 'completed');
-                return [...uploading, ...mappedVideos];
+                const uploading = prev.filter(p => p.status !== 'completed' && p.status !== 'pending-payment');
+
+                // Merge lists preventing duplicates based on ID
+                const existingIds = new Set(uploading.map(v => v.id));
+                const uniqueMapped = mappedVideos.filter(v => !existingIds.has(v.id));
+
+                return [...uploading, ...uniqueMapped];
             });
         } catch (error) {
             console.error("Failed to fetch videos", error);
@@ -111,6 +121,51 @@ const Videos = () => {
             });
         }
     };
+
+    const handleChangeVideo = (id: string) => {
+        setVideoToChangeId(id);
+        if (changeVideoInputRef.current) {
+            changeVideoInputRef.current.click();
+        }
+    };
+
+    const handleFileChangeForUpdate = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+        if (files && files.length > 0 && videoToChangeId) {
+            const file = files[0];
+
+            // Delete old video first
+            try {
+                // Optimistically remove from UI or mark as changing?
+                // For simplicity, let's just delete then upload.
+                await deleteVideo(videoToChangeId);
+
+                // Remove old video from state
+                setVideos(prev => prev.filter(v => v.id !== videoToChangeId));
+
+                toast({
+                    title: "Updating Video",
+                    description: "Old video removed. Uploading new video...",
+                });
+
+                // Upload new video
+                handleUpload(file);
+
+            } catch (error) {
+                console.error("Failed to change video", error);
+                toast({
+                    variant: "destructive",
+                    title: "Change Failed",
+                    description: "Could not remove the old video.",
+                });
+            } finally {
+                setVideoToChangeId(null);
+                // Reset input
+                e.target.value = "";
+            }
+        }
+    };
+
 
     const handleDragOver = useCallback((e: React.DragEvent) => {
         e.preventDefault();
@@ -179,6 +234,9 @@ const Videos = () => {
             );
 
             setCurrentVideoId(serverId);
+            // Don't auto-show payment modal on 'Change' action if we want to preview first, 
+            // but for standard flow it's fine. 
+            // Let's keep it to ensure they know they need to pay.
             setShowPaymentModal(true);
 
         } catch (error) {
@@ -223,7 +281,7 @@ const Videos = () => {
             if (!currentVideoId) throw new Error("No video ID");
 
             // 1. Create Order
-            const order = await createRazorpayOrder(1.0);
+            const order = await createRazorpayOrder(1499);
 
             // 2. Options
             const options: any = {
@@ -355,6 +413,15 @@ const Videos = () => {
                 </p>
             </div>
 
+            {/* Hidden Input for Changing Video */}
+            <input
+                type="file"
+                accept="video/*"
+                ref={changeVideoInputRef}
+                className="hidden"
+                onChange={handleFileChangeForUpdate}
+            />
+
             {/* Upload Area */}
             <div
                 onDragOver={handleDragOver}
@@ -410,7 +477,7 @@ const Videos = () => {
                                 className="glass-card p-4 flex flex-col sm:flex-row sm:items-center gap-4 transition-all hover:bg-secondary/40"
                             >
                                 <div className="w-12 h-12 rounded-lg bg-secondary flex items-center justify-center flex-shrink-0">
-                                    <Video className="w-6 h-6 text-primary" />
+                                    <VideoIcon className="w-6 h-6 text-primary" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center justify-between mb-1">
@@ -445,18 +512,49 @@ const Videos = () => {
                                         )}
                                     </div>
                                 </div>
+
                                 {video.status === "pending-payment" && (
-                                    <Button
-                                        variant="hero"
-                                        size="sm"
-                                        onClick={() => {
-                                            setCurrentVideoId(video.id);
-                                            setShowPaymentModal(true);
-                                        }}
-                                    >
-                                        Pay Now
-                                    </Button>
+                                    <div className="flex gap-2">
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="text-primary hover:text-primary/80 hover:bg-primary/10"
+                                            onClick={() => handleViewVideo(video.id)}
+                                            title="Preview Video"
+                                        >
+                                            <Eye className="w-5 h-5" />
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="text-primary hover:text-primary/80 hover:bg-primary/10"
+                                            onClick={() => handleChangeVideo(video.id)}
+                                            title="Change Video"
+                                        >
+                                            <RefreshCw className="w-5 h-5" />
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="text-destructive hover:text-destructive/80 hover:bg-destructive/10"
+                                            onClick={() => handleDeleteVideo(video.id)}
+                                            title="Delete Video"
+                                        >
+                                            <Trash2 className="w-5 h-5" />
+                                        </Button>
+                                        <Button
+                                            variant="hero"
+                                            size="sm"
+                                            onClick={() => {
+                                                setCurrentVideoId(video.id);
+                                                setShowPaymentModal(true);
+                                            }}
+                                        >
+                                            Pay Now
+                                        </Button>
+                                    </div>
                                 )}
+
                                 {video.status === "completed" && (
                                     <div className="flex gap-2">
                                         <Button
@@ -508,18 +606,18 @@ const Videos = () => {
                         <div className="glass-card p-4 bg-secondary/30">
                             <div className="flex justify-between items-center">
                                 <span className="text-muted-foreground">Video Upload</span>
-                                <span className="text-foreground font-medium">₹ 1.0</span>
+                                <span className="text-foreground font-medium">₹ 1499</span>
                             </div>
                             <div className="flex justify-between items-center mt-2 pt-2 border-t border-border">
                                 <span className="text-foreground font-medium">Total</span>
-                                <span className="text-xl font-display font-bold gradient-text">₹ 1.0</span>
+                                <span className="text-xl font-display font-bold gradient-text">₹ 1499</span>
                             </div>
                         </div>
 
                         <div className="space-y-4">
                             <div className="p-5 border border-primary/50 bg-primary/20 rounded-xl text-center shadow-sm animate-in fade-in slide-in-from-top-2">
                                 <p className="text-base font-medium text-foreground/90">
-                                    You will be redirected to Razorpay secure checkout to complete your payment of <span className="font-bold text-primary">₹ 1.0</span>.
+                                    You will be redirected to Razorpay secure checkout to complete your payment of <span className="font-bold text-primary">₹ 1499</span>.
                                 </p>
                             </div>
                         </div>
@@ -539,7 +637,7 @@ const Videos = () => {
                             ) : (
                                 <>
                                     <CreditCard className="w-5 h-5 mr-2" />
-                                    Pay ₹ 1.0
+                                    Pay ₹ 1499
                                 </>
                             )}
                         </Button>
