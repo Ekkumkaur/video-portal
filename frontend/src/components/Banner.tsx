@@ -130,7 +130,7 @@ const Banner = () => {
                     <div className={`mt-8 ${index === current ? 'animate-fade-in-up duration-700 delay-300' : 'opacity-0'}`}>
                       <Button asChild variant="hero" size="xl" className="font-bold text-lg px-10 shadow-xl hover:scale-105 transition-transform duration-300">
                         <Link to="/auth?mode=register">
-                          REGISTRATION NOW
+                          REGISTER NOW
                         </Link>
                       </Button>
                     </div>
