@@ -334,7 +334,7 @@ const Auth = ({ forceRegister }: AuthProps) => {
             Start your Innings with BRPL
           </h2>
           <p className="text-lg text-white/90 mb-8 max-w-md leading-relaxed">
-            Upload match highlights, manage teams, and showcase talent on the premier cricket platform.
+            Show your talent, represent your zone, and step into the spotlight on TV.
           </p>
 
           <div className="flex items-center gap-2 mt-4">
