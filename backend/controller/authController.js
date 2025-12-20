@@ -128,27 +128,26 @@ const register = async (req, res) => {
 
 const sendOtp = async (req, res) => {
   try {
-    const { mobile } = req.body;
-    if (!mobile) {
-      return res.status(400).json({ message: "Mobile number is required" });
+    const { email } = req.body; // Changed from mobile to email
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
     }
 
-    // Set fixed OTP '1234'
-    const otp = "1234";
+    const otp = Math.floor(1000 + Math.random() * 9000).toString(); // 4 digit random OTP
 
     // Save to DB (upsert or delete old first)
-    await Otp.deleteMany({ mobile }); // Clear old OTPs
-    await Otp.create({ mobile, otp });
+    await Otp.deleteMany({ email }); // Clear old OTPs for this email
+    await Otp.create({ email, otp });
 
-    console.log(`OTP for ${mobile}: ${otp}`); // For debugging/demo
+    const { sendRegistrationOtpEmail } = require('../utils/emailService');
+    await sendRegistrationOtpEmail(email, otp);
 
-
+    console.log(`OTP for ${email}: ${otp}`);
 
     res.status(200).json({
-      message: "OTP sent successfully",
+      message: "OTP sent successfully to your email",
       success: true,
-      // returning OTP in response for demo purposes
-      otp
+      // otp // Removed OTP from response for security in production
     });
   } catch (error) {
     console.error("Send OTP Error:", error);
@@ -158,12 +157,12 @@ const sendOtp = async (req, res) => {
 
 const verifyOtp = async (req, res) => {
   try {
-    const { mobile, otp } = req.body;
-    if (!mobile || !otp) {
-      return res.status(400).json({ message: "Mobile and OTP are required" });
+    const { email, otp } = req.body; // Changed from mobile to email
+    if (!email || !otp) {
+      return res.status(400).json({ message: "Email and OTP are required" });
     }
 
-    const record = await Otp.findOne({ mobile, otp });
+    const record = await Otp.findOne({ email, otp });
 
     if (!record) {
       return res.status(400).json({ message: "Invalid or expired OTP", success: false });
@@ -172,7 +171,7 @@ const verifyOtp = async (req, res) => {
     // OTP valid - optionally delete it to prevent reuse
     await Otp.deleteOne({ _id: record._id });
 
-    res.status(200).json({ message: "OTP verified successfully", success: true });
+    res.status(200).json({ message: "Email verified successfully", success: true });
   } catch (error) {
     console.error("Verify OTP Error:", error);
     res.status(500).json({ message: "Failed to verify OTP", error: error.message });

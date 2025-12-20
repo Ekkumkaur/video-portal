@@ -41,7 +41,7 @@ const Auth = ({ forceRegister }: AuthProps) => {
   // OTP State
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [otpInput, setOtpInput] = useState("");
-  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
 
@@ -105,11 +105,12 @@ const Auth = ({ forceRegister }: AuthProps) => {
     if (e.target.id === 'mobile') {
       const val = e.target.value.replace(/\D/g, '').slice(0, 10);
       setFormData({ ...formData, [e.target.id]: val });
-      setIsPhoneVerified(false);
       return;
     }
     setFormData({ ...formData, [e.target.id]: e.target.value });
-    // Reset phone verification if number changes (handled above for mobile specific)
+    if (e.target.id === 'email') {
+      setIsEmailVerified(false);
+    }
   };
 
   const handleSelectChange = (value: string, field: string) => {
@@ -117,24 +118,23 @@ const Auth = ({ forceRegister }: AuthProps) => {
   };
 
   const handleSendOtp = async () => {
-    if (!formData.mobile || !/^\d{10}$/.test(formData.mobile)) {
+    if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       toast({
         variant: "destructive",
-        title: "Invalid Mobile Number",
-        description: "Please enter a valid 10-digit mobile number.",
+        title: "Invalid Email",
+        description: "Please enter a valid email address.",
       });
       return;
     }
 
     setIsSendingOtp(true);
     try {
-      const response = await sendOtp(formData.mobile);
+      const response = await sendOtp(formData.email);
       if (response.success) {
         toast({
           title: "OTP Sent",
-          description: `OTP sent to ${formData.mobile}.`,
+          description: `OTP sent to ${formData.email}.`,
         });
-        console.log("DEMO OTP:", response.otp);
         setShowOtpModal(true);
       }
     } catch (error: any) {
@@ -153,13 +153,13 @@ const Auth = ({ forceRegister }: AuthProps) => {
 
     setIsVerifyingOtp(true);
     try {
-      const response = await verifyOtp(formData.mobile, otpInput);
+      const response = await verifyOtp(formData.email, otpInput);
       if (response.success) {
         toast({
-          title: "Phone Verified",
-          description: "Your mobile number has been verified successfully.",
+          title: "Email Verified",
+          description: "Your email has been verified successfully.",
         });
-        setIsPhoneVerified(true);
+        setIsEmailVerified(true);
         setShowOtpModal(false);
         setFormData(prev => ({ ...prev, otp: otpInput }));
       }
@@ -256,11 +256,11 @@ const Auth = ({ forceRegister }: AuthProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (isRegister && !isPhoneVerified) {
+    if (isRegister && !isEmailVerified) {
       toast({
         variant: "destructive",
         title: "Verification Required",
-        description: "Please verify your mobile number before registering.",
+        description: "Please verify your email address before registering.",
       });
       return;
     }
@@ -387,29 +387,12 @@ const Auth = ({ forceRegister }: AuthProps) => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="email" className="text-foreground">Email</Label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                        <Input id="email" type="email" className="pl-9" value={formData.email} onChange={handleChange} required placeholder="Enter Email" />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="mobile" className="text-foreground">Mobile</Label>
                       <div className="relative flex gap-2">
                         <div className="relative flex-1">
-                          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                          <Input
-                            id="mobile"
-                            className="pl-9"
-                            value={formData.mobile}
-                            onChange={handleChange}
-                            disabled={isPhoneVerified}
-                            required
-                            inputMode="numeric"
-                            maxLength={10}
-                            placeholder="Enter Mobile Number"
-                          />
+                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                          <Input id="email" type="email" className="pl-9" value={formData.email} onChange={handleChange} required placeholder="Enter Email" disabled={isEmailVerified} />
                         </div>
-                        {isPhoneVerified ? (
+                        {isEmailVerified ? (
                           <Button type="button" variant="outline" className="border-green-500 text-green-500" disabled>
                             <CheckCircle2 className="w-4 h-4 mr-2" />
                             Verified
@@ -419,11 +402,27 @@ const Auth = ({ forceRegister }: AuthProps) => {
                             type="button"
                             variant="secondary"
                             onClick={handleSendOtp}
-                            disabled={isSendingOtp || !formData.mobile}
+                            disabled={isSendingOtp || !formData.email}
                           >
                             {isSendingOtp ? <Loader2 className="w-4 h-4 animate-spin" /> : "Verify"}
                           </Button>
                         )}
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="mobile" className="text-foreground">Mobile</Label>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          id="mobile"
+                          className="pl-9"
+                          value={formData.mobile}
+                          onChange={handleChange}
+                          required
+                          inputMode="numeric"
+                          maxLength={10}
+                          placeholder="Enter Mobile Number"
+                        />
                       </div>
                     </div>
                   </div>
@@ -665,7 +664,7 @@ const Auth = ({ forceRegister }: AuthProps) => {
                 </>
               )}
 
-              <Button type="submit" variant="hero" size="lg" className="w-full" disabled={isLoading || (isRegister && !isPhoneVerified)}>
+              <Button type="submit" variant="hero" size="lg" className="w-full" disabled={isLoading || (isRegister && !isEmailVerified)}>
                 {isLoading ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin mr-2" />
@@ -707,9 +706,9 @@ const Auth = ({ forceRegister }: AuthProps) => {
       <Dialog open={showOtpModal} onOpenChange={setShowOtpModal}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Verify Mobile Number</DialogTitle>
+            <DialogTitle>Verify Email Address</DialogTitle>
             <DialogDescription>
-              Enter the OTP sent to {formData.mobile}
+              Enter the OTP sent to {formData.email}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">

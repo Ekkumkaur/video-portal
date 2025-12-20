@@ -11,13 +11,13 @@ export const register = async (data: any) => {
     return response.data;
 };
 
-export const sendOtp = async (mobile: string) => {
-    const response = await api.post(ENDPOINTS.AUTH.SEND_OTP, { mobile });
+export const sendOtp = async (email: string) => {
+    const response = await api.post(ENDPOINTS.AUTH.SEND_OTP, { email });
     return response.data;
 };
 
-export const verifyOtp = async (mobile: string, otp: string) => {
-    const response = await api.post(ENDPOINTS.AUTH.VERIFY_OTP, { mobile, otp });
+export const verifyOtp = async (email: string, otp: string) => {
+    const response = await api.post(ENDPOINTS.AUTH.VERIFY_OTP, { email, otp });
     return response.data;
 };
 

@@ -124,6 +124,53 @@ const sendPasswordResetEmail = async (email, otp, name) => {
     }
 };
 
+const sendRegistrationOtpEmail = async (email, otp) => {
+    try {
+        const logoPath = path.join(__dirname, '../../frontend/public/logo.png');
+
+        const mailOptions = {
+            from: '"Beyond Reach Premiere League" <ektadev531@gmail.com>',
+            to: email,
+            subject: 'Registration OTP - BRPL',
+            html: `
+            <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; padding: 20px;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <img src="cid:logo" alt="BRPL Logo" style="width: 80px;" />
+                    <h2 style="color: #444; margin-top: 10px;">Beyond Reach Premiere League</h2>
+                </div>
+                
+                <hr style="border: 0; border-top: 1px solid #eee;" />
+                
+                <p>Hello,</p>
+                <p>Verify your email address to complete your registration request. Please use the following OTP:</p>
+                
+                <div style="background-color: #f0f0f0; padding: 15px; border-radius: 5px; text-align: center; font-size: 24px; letter-spacing: 5px; font-weight: bold; margin: 20px 0;">
+                    ${otp}
+                </div>
+                
+                <p>If you did not request this, please ignore this email.</p>
+                
+                <p style="font-size: 12px; color: #777; margin-top: 30px;">This OTP will expire in 5 minutes.</p>
+            </div>
+            `,
+            attachments: [
+                {
+                    filename: 'logo.png',
+                    path: logoPath,
+                    cid: 'logo'
+                }
+            ]
+        };
+
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Registration OTP sent: %s', info.messageId);
+        return info;
+    } catch (error) {
+        console.error('Error sending registration OTP email:', error);
+        throw error;
+    }
+};
+
 const sendContactEmail = async (contactDetails) => {
     try {
         const { firstName, lastName, email, mobileNumber, message } = contactDetails;
@@ -154,4 +201,4 @@ const sendContactEmail = async (contactDetails) => {
     }
 };
 
-module.exports = { sendInvoiceEmail, sendPasswordResetEmail, sendContactEmail };
+module.exports = { sendInvoiceEmail, sendPasswordResetEmail, sendContactEmail, sendRegistrationOtpEmail };
