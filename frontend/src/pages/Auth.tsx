@@ -3,7 +3,7 @@ import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Play, Mail, Lock, User, ArrowLeft, Loader2, Phone, MapPin, FileDigit, KeyRound, CheckCircle2 } from "lucide-react";
+import { Play, Mail, Lock, User, ArrowLeft, Loader2, Phone, MapPin, FileDigit, KeyRound, CheckCircle2, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { login, register, sendOtp, verifyOtp, forgotPassword, resetPassword } from "@/apihelper/auth";
 
@@ -41,7 +41,7 @@ const Auth = ({ forceRegister }: AuthProps) => {
   // OTP State
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [otpInput, setOtpInput] = useState("");
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
 
@@ -99,18 +99,16 @@ const Auth = ({ forceRegister }: AuthProps) => {
 
 
 
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // For mobile, only allow numbers and max 10 digits
     if (e.target.id === 'mobile') {
       const val = e.target.value.replace(/\D/g, '').slice(0, 10);
       setFormData({ ...formData, [e.target.id]: val });
+      setIsPhoneVerified(false);
       return;
     }
     setFormData({ ...formData, [e.target.id]: e.target.value });
-    if (e.target.id === 'email') {
-      setIsEmailVerified(false);
-    }
+    // Reset phone verification if number changes (handled above for mobile specific)
   };
 
   const handleSelectChange = (value: string, field: string) => {
@@ -118,22 +116,22 @@ const Auth = ({ forceRegister }: AuthProps) => {
   };
 
   const handleSendOtp = async () => {
-    if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    if (!formData.mobile || !/^\d{10}$/.test(formData.mobile)) {
       toast({
         variant: "destructive",
-        title: "Invalid Email",
-        description: "Please enter a valid email address.",
+        title: "Invalid Mobile Number",
+        description: "Please enter a valid 10-digit mobile number.",
       });
       return;
     }
 
     setIsSendingOtp(true);
     try {
-      const response = await sendOtp(formData.email);
+      const response = await sendOtp(formData.mobile);
       if (response.success) {
         toast({
           title: "OTP Sent",
-          description: `OTP sent to ${formData.email}.`,
+          description: `OTP sent to ${formData.mobile}.`,
         });
         setShowOtpModal(true);
       }
@@ -153,13 +151,13 @@ const Auth = ({ forceRegister }: AuthProps) => {
 
     setIsVerifyingOtp(true);
     try {
-      const response = await verifyOtp(formData.email, otpInput);
+      const response = await verifyOtp(formData.mobile, otpInput);
       if (response.success) {
         toast({
-          title: "Email Verified",
-          description: "Your email has been verified successfully.",
+          title: "Phone Verified",
+          description: "Your mobile number has been verified successfully.",
         });
-        setIsEmailVerified(true);
+        setIsPhoneVerified(true);
         setShowOtpModal(false);
         setFormData(prev => ({ ...prev, otp: otpInput }));
       }
@@ -181,6 +179,11 @@ const Auth = ({ forceRegister }: AuthProps) => {
   const [forgotOtp, setForgotOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [isForgotLoading, setIsForgotLoading] = useState(false);
+
+  // Password Visibility State
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
   const handleForgotPassword = async () => {
     if (!forgotEmail) {
@@ -256,11 +259,11 @@ const Auth = ({ forceRegister }: AuthProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (isRegister && !isEmailVerified) {
+    if (isRegister && !isPhoneVerified) {
       toast({
         variant: "destructive",
         title: "Verification Required",
-        description: "Please verify your email address before registering.",
+        description: "Please verify your mobile number before registering.",
       });
       return;
     }
@@ -387,12 +390,32 @@ const Auth = ({ forceRegister }: AuthProps) => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="email" className="text-foreground">Email</Label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input id="email" type="email" className="pl-9" value={formData.email} onChange={handleChange} required placeholder="Enter Email" />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="mobile" className="text-foreground">Mobile</Label>
                       <div className="relative flex gap-2">
                         <div className="relative flex-1">
-                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                          <Input id="email" type="email" className="pl-9" value={formData.email} onChange={handleChange} required placeholder="Enter Email" disabled={isEmailVerified} />
+                          <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center gap-2 z-10">
+                            <Phone className="w-4 h-4 text-muted-foreground" />
+                            <span className="text-sm text-muted-foreground font-medium">+91</span>
+                          </div>
+                          <Input
+                            id="mobile"
+                            className="pl-20"
+                            value={formData.mobile}
+                            onChange={handleChange}
+                            disabled={isPhoneVerified}
+                            required
+                            inputMode="numeric"
+                            maxLength={10}
+                            placeholder="Enter Mobile Number"
+                          />
                         </div>
-                        {isEmailVerified ? (
+                        {isPhoneVerified ? (
                           <Button type="button" variant="outline" className="border-green-500 text-green-500" disabled>
                             <CheckCircle2 className="w-4 h-4 mr-2" />
                             Verified
@@ -402,27 +425,11 @@ const Auth = ({ forceRegister }: AuthProps) => {
                             type="button"
                             variant="secondary"
                             onClick={handleSendOtp}
-                            disabled={isSendingOtp || !formData.email}
+                            disabled={isSendingOtp || !formData.mobile}
                           >
                             {isSendingOtp ? <Loader2 className="w-4 h-4 animate-spin" /> : "Verify"}
                           </Button>
                         )}
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="mobile" className="text-foreground">Mobile</Label>
-                      <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                        <Input
-                          id="mobile"
-                          className="pl-9"
-                          value={formData.mobile}
-                          onChange={handleChange}
-                          required
-                          inputMode="numeric"
-                          maxLength={10}
-                          placeholder="Enter Mobile Number"
-                        />
                       </div>
                     </div>
                   </div>
@@ -445,7 +452,21 @@ const Auth = ({ forceRegister }: AuthProps) => {
                       <Label htmlFor="password" className="text-foreground">Password</Label>
                       <div className="relative">
                         <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                        <Input id="password" type="password" className="pl-9" value={formData.password} onChange={handleChange} required />
+                        <Input
+                          id="password"
+                          type={showRegisterPassword ? "text" : "password"}
+                          className="pl-9 pr-10"
+                          value={formData.password}
+                          onChange={handleChange}
+                          required
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowRegisterPassword(!showRegisterPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        >
+                          {showRegisterPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -559,14 +580,21 @@ const Auth = ({ forceRegister }: AuthProps) => {
                       <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                       <Input
                         id="password"
-                        type="password"
+                        type={showLoginPassword ? "text" : "password"}
                         placeholder="••••••••"
-                        className="pl-12"
+                        className="pl-12 pr-10"
                         value={formData.password}
                         onChange={handleChange}
                         required
                         autoComplete="new-password"
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowLoginPassword(!showLoginPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      >
+                        {showLoginPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      </button>
                     </div>
                   </div>
 
@@ -636,12 +664,19 @@ const Auth = ({ forceRegister }: AuthProps) => {
                                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                                 <Input
                                   id="new-password"
-                                  type="password"
+                                  type={showNewPassword ? "text" : "password"}
                                   placeholder="Enter new password"
-                                  className="pl-9"
+                                  className="pl-9 pr-10"
                                   value={newPassword}
                                   onChange={(e) => setNewPassword(e.target.value)}
                                 />
+                                <button
+                                  type="button"
+                                  onClick={() => setShowNewPassword(!showNewPassword)}
+                                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                >
+                                  {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                </button>
                               </div>
                             </div>
                           </>
@@ -664,7 +699,7 @@ const Auth = ({ forceRegister }: AuthProps) => {
                 </>
               )}
 
-              <Button type="submit" variant="hero" size="lg" className="w-full" disabled={isLoading || (isRegister && !isEmailVerified)}>
+              <Button type="submit" variant="hero" size="lg" className="w-full" disabled={isLoading || (isRegister && !isPhoneVerified)}>
                 {isLoading ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin mr-2" />
@@ -706,9 +741,9 @@ const Auth = ({ forceRegister }: AuthProps) => {
       <Dialog open={showOtpModal} onOpenChange={setShowOtpModal}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Verify Email Address</DialogTitle>
+            <DialogTitle>Verify Mobile Number</DialogTitle>
             <DialogDescription>
-              Enter the OTP sent to {formData.email}
+              Enter the OTP sent to {formData.mobile}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
