@@ -341,7 +341,7 @@ const Auth = ({ forceRegister }: AuthProps) => {
           </p>
 
           <div className="flex items-center gap-2 mt-4">
-            <span className="text-5xl lg:text-6xl font-extrabold text-[#FFC928] drop-shadow-md ml-auto block w-fit">₹ 1499</span>
+            <span className="text-5xl lg:text-6xl font-extrabold text-[#FFC928] drop-shadow-md ml-auto block w-fit">₹ 1499.99</span>
           </div>
         </div>
 
