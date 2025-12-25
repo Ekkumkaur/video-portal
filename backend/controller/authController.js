@@ -2,6 +2,7 @@ const User = require('../model/user.model');
 const Coach = require('../model/coach.model');
 const Influencer = require('../model/influencer.model');
 const Otp = require('../model/otp.model');
+const Visit = require('../model/visit.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -84,7 +85,7 @@ const register = async (req, res) => {
       gender, zone_id, city, state, pincode,
       address1, address2, aadhar, playerRole,
       isFromLandingPage, paymentAmount, paymentId,
-      referralCodeUsed
+      referralCodeUsed, trackingId, fbclid
     } = req.body;
 
     if (!email || !password || !fname || !mobile) {
@@ -103,9 +104,49 @@ const register = async (req, res) => {
       trail_video_path = req.file.path;
     }
 
-    const normalizedReferralCode = referralCodeUsed ? String(referralCodeUsed).trim().toUpperCase() : '';
+    let normalizedReferralCode = referralCodeUsed ? String(referralCodeUsed).trim().toUpperCase() : '';
     let referralSourceRole = undefined;
     let referralSourceId = undefined;
+    let conversionType = 'none'; // Default
+
+    // Fallback / Tracking Logic
+    const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || req.ip;
+    const clientUa = req.headers['user-agent'];
+    let matchedVisit = null;
+
+    if (normalizedReferralCode) {
+      conversionType = 'code';
+    } else {
+      // Try to find a visit to attribute this registration to
+      // 1. By Tracking ID
+      if (trackingId) {
+        matchedVisit = await Visit.findOne({ trackingId }).sort({ createdAt: -1 });
+      }
+
+      // 2. By IP + User Agent (within 60 mins)
+      if (!matchedVisit) {
+        const timeWindow = new Date(Date.now() - 60 * 60 * 1000);
+        const criteria = {
+          ipAddress: clientIp,
+          userAgent: clientUa,
+          createdAt: { $gte: timeWindow }
+        };
+        // If fbclid is present, use it to strict match
+        if (fbclid) criteria.fbclid = fbclid;
+
+        matchedVisit = await Visit.findOne(criteria).sort({ createdAt: -1 });
+      }
+
+      if (matchedVisit) {
+        conversionType = 'fallback';
+        // If the visit had a code, we can inherit it
+        if (matchedVisit.referralCode) {
+          normalizedReferralCode = matchedVisit.referralCode;
+        }
+      } else {
+        conversionType = 'organic';
+      }
+    }
 
     if (normalizedReferralCode) {
       const coachSource = await Coach.findOne({ referralCode: normalizedReferralCode }).select('_id');
@@ -138,10 +179,22 @@ const register = async (req, res) => {
       referralCodeUsed: normalizedReferralCode || undefined,
       referralSourceRole,
       referralSourceId,
-      isPaid: !!paymentId // Set isPaid to true if paymentId is present
+      isPaid: !!paymentId, // Set isPaid to true if paymentId is present
+      ipAddress: clientIp,
+      userAgent: clientUa,
+      fbclid: fbclid || (matchedVisit ? matchedVisit.fbclid : undefined),
+      trackingId: trackingId || (matchedVisit ? matchedVisit.trackingId : undefined),
+      conversionType
     });
 
     await newUser.save();
+
+    // Mark visit as converted if matched
+    if (matchedVisit) {
+      matchedVisit.converted = true;
+      matchedVisit.userId = newUser._id;
+      await matchedVisit.save();
+    }
 
     res.status(201).json({
       statusCode: 201,
@@ -195,7 +248,7 @@ const sendOtp = async (req, res) => {
 
 const getCoachMyPlayers = async (req, res) => {
   try {
-    if (req.role !== 'coach') {
+    if (req.role !== 'coach' && req.role !== 'influencer') {
       return res.status(403).json({ message: 'Forbidden' });
     }
 
@@ -204,7 +257,7 @@ const getCoachMyPlayers = async (req, res) => {
     const search = (req.query.search || '').toString().trim();
 
     const filter = {
-      referralSourceRole: 'coach',
+      referralSourceRole: req.role,
       referralSourceId: req.userId
     };
 
@@ -570,6 +623,64 @@ const loginCoach = async (req, res) => {
   }
 };
 
+const trackVisit = async (req, res) => {
+  try {
+    const { trackingId, ipAddress, userAgent, fbclid, referralCode } = req.body;
+
+    // Fallback IP/UA if not sent in body
+    const finalIp = ipAddress || req.headers['x-forwarded-for'] || req.socket.remoteAddress || req.ip;
+    const finalUa = userAgent || req.headers['user-agent'];
+
+    const newVisit = new Visit({
+      trackingId,
+      ipAddress: finalIp,
+      userAgent: finalUa,
+      fbclid,
+      referralCode,
+      converted: false
+    });
+
+    await newVisit.save();
+
+    res.status(200).json({ success: true, message: 'Visit tracked' });
+  } catch (error) {
+    console.error("Track Visit Error:", error);
+    res.status(500).json({ success: false, message: 'Failed to track visit' });
+  }
+};
+
+const getVisits = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const visits = await Visit.find()
+      .populate('userId', 'fname lname email mobile')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const total = await Visit.countDocuments();
+
+    res.status(200).json({
+      success: true,
+      data: {
+        items: visits,
+        pagination: {
+          page,
+          limit,
+          total,
+          pages: Math.ceil(total / limit)
+        }
+      }
+    });
+  } catch (error) {
+    console.error("Get Visits Error:", error);
+    res.status(500).json({ success: false, message: "Failed to fetch visits" });
+  }
+};
+
 module.exports = {
   login,
   register,
@@ -582,5 +693,7 @@ module.exports = {
   loginCoach,
   resendWelcomeEmail,
   getPartnerProfile,
-  getCoachMyPlayers
+  getCoachMyPlayers,
+  trackVisit,
+  getVisits
 };

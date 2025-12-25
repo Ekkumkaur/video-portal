@@ -33,7 +33,13 @@ const userSchema = new mongoose.Schema({
   isFromLandingPage: { type: Boolean, default: false },
   referralCodeUsed: { type: String },
   referralSourceRole: { type: String, enum: ['coach', 'influencer'] },
-  referralSourceId: { type: mongoose.Schema.Types.ObjectId, refPath: 'referralSourceRole' }
+  referralSourceId: { type: mongoose.Schema.Types.ObjectId, refPath: 'referralSourceRole' },
+  // Tracking Fields
+  ipAddress: { type: String },
+  userAgent: { type: String },
+  fbclid: { type: String },
+  trackingId: { type: String },
+  conversionType: { type: String, enum: ['code', 'fallback', 'organic', 'none'], default: 'none' }
 }, { timestamps: true });
 
 
