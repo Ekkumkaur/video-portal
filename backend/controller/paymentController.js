@@ -13,7 +13,7 @@ exports.createOrder = async (req, res) => {
 
     try {
         const options = {
-            amount: amount * 100, // amount in smallest currency unit
+            amount: 1499 * 100, // amount in smallest currency unit (1499 INR)
             currency,
             receipt,
         };
@@ -32,7 +32,7 @@ exports.createOrderLanding = async (req, res) => {
 
     try {
         const options = {
-            amount: amount * 100, // amount in smallest currency unit
+            amount: 1499 * 100, // amount in smallest currency unit (1499 INR)
             currency,
             receipt,
         };
@@ -66,7 +66,7 @@ exports.verifyPayment = async (req, res) => {
                 if (video) {
                     video.status = 'completed';
                     video.paymentId = razorpay_payment_id;
-                    video.amount = 1499; // Or pass amount from frontend if needed
+                    video.amount = 1499; // Fixed amount
                     await video.save();
                     return res.json({ message: "Payment verified and video updated successfully", success: true });
                 }
